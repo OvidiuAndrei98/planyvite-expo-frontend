@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import MarkdownViewer from "@/components/markdown-viewer/MarkdownViewe";
 
 const Page = () => {
   const [provider, setProvider] = useState<any>(null);
@@ -58,6 +60,45 @@ const Page = () => {
           {provider.descriptions}
         </p>
       </div>
+      <div className="provider-packages w-full mb-6">
+        <Tabs
+          defaultValue={
+            provider.packages && provider.packages.length > 0
+              ? provider.packages[0].name
+              : ""
+          }
+        >
+          <TabsList>
+            {provider.packages && provider.packages.length > 0 ? (
+              provider.packages.map((pkg: any, index: number) => (
+                <TabsTrigger key={index} value={pkg.name}>
+                  {pkg.name}
+                </TabsTrigger>
+              ))
+            ) : (
+              <div>No packages available.</div>
+            )}
+          </TabsList>
+          {provider.packages && provider.packages.length > 0 ? (
+            provider.packages.map((pkg: any, index: number) => (
+              <TabsContent key={index} value={pkg.name}>
+                <div className="package-card bg-white p-2 rounded-md shadow-sm">
+                  <h4 className="text-xl font-semibold mb-2">{pkg.name}</h4>
+                  <div className="text-muted-foreground mb-4">
+                    <MarkdownViewer content={pkg.shortDescription} />
+                  </div>
+                  <div className="mb-4">
+                    <MarkdownViewer content={pkg.details} />
+                  </div>
+                  <span className="text-2xl font-bold">{pkg.price} Lei</span>
+                </div>
+              </TabsContent>
+            ))
+          ) : (
+            <div>No packages available.</div>
+          )}
+        </Tabs>
+      </div>
       <div className="provider-contact w-full bg-white p-6 rounded-md shadow-sm mb-6">
         <h3 className="text-2xl font-semibold mb-4">Informații de Contact</h3>
         <div className="contact-info flex flex-col gap-4">
@@ -81,7 +122,10 @@ const Page = () => {
           answer="Anulările făcute cu mai mult de 48 de ore înainte de eveniment nu implică costuri suplimentare. Pentru anulări în ultimele 48 de ore, se aplică o taxă de 25%."
         />
       </div>
-      <div className="sticky bottom-0 left-0 bg-white w-full h-16">Footer</div>
+      <div className="bg-primary/30 p-4 rounded">
+        <h3 className="text-2xl font-semibold mb-4">Planyvite Expo</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+      </div>
     </div>
   );
 };
