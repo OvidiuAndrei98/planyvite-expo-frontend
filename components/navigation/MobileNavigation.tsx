@@ -57,7 +57,14 @@ const MobileNavigation = () => {
           </SheetContent>
         </Sheet>
       </div>
-      <Button type="submit">Intra in cont</Button>
+      <Button
+        type="submit"
+        onClick={() => {
+          window.location.href = "/login";
+        }}
+      >
+        Intra in cont
+      </Button>
     </div>
   );
 };

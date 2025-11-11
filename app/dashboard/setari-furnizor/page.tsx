@@ -11,7 +11,7 @@ import {
   FieldSet,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import React, { useEffect, useRef, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 import Quill from "quill";
 import QuillEditor from "@/components/quill-editor/Editor";
 import {
@@ -33,6 +33,9 @@ import { EVENT_VENDOR_CATEGORIES, ROMANIA_LOCATIONS } from "@/core/constants";
 import { Provider } from "@/core/types";
 import { queryProviderByIdService } from "@/service/provider/queryProviderById";
 import { updateProviderService } from "@/service/provider/updateProviderService";
+import Link from "next/link";
+import { Textarea } from "@/components/ui/textarea";
+import { Spinner } from "@/components/ui/spinner";
 
 const ProviderSettingsPage: React.FC = () => {
   const user = useAuth().userDetails;
@@ -148,24 +151,26 @@ const ProviderSettingsPage: React.FC = () => {
   };
 
   return providerLoading ? (
-    <div>Loading...</div>
+    <div className="w-full h-full flex items-center justify-center bg-background">
+      <Spinner color="#7b34f9" className="size-8" />
+    </div>
   ) : (
     <div className="flex flex-col w-full h-full bg-background p-[var(--padding-sm)] overflow-auto gap-6">
-      <div className="flex justify-between items-center mb-6 max-w-[1024px] mx-auto w-full">
-        {!isValidProvider && (
-          <div className="p-4 bg-yellow-100/50 border-l-4 border-yellow-500 text-yellow-700">
-            <p>
-              Pentru a activa profilul tău de furnizor, te rugăm să completezi
-              toate câmpurile necesare din setările generale.
-            </p>
-          </div>
-        )}
+      <div className="flex justify-end items-center max-w-[1024px] mx-auto w-full sticky top-0 z-20 rounded-md gap-4">
         <Button variant="default" onClick={updateProvider}>
           Salvează Setările
         </Button>
       </div>
 
       <div className="w-full bg-white rounded-md p-4 shadow-sm max-w-[1024px] mx-auto">
+        {!isValidProvider && (
+          <div className="p-4 bg-yellow-100/50 border-l-4 border-yellow-500 text-yellow-700 text-md rounded-md mb-4">
+            <p>
+              Pentru a activa profilul tău de furnizor, te rugăm să completezi
+              toate câmpurile necesare din setările generale.
+            </p>
+          </div>
+        )}
         <h1 className="text-2xl font-bold mb-1">Setări Generale</h1>
         <p>Aici poți gestiona setările contului tău de furnizor.</p>
         <FieldSet className="py-4">
@@ -296,6 +301,7 @@ const ProviderSettingsPage: React.FC = () => {
                 </FieldDescription>
               </FieldContent>
               <SortableImageUpload
+                maxFiles={user?.providerPlan === "pro" ? 5 : 1}
                 path={user?.uid || "defaultUserId"}
                 onSaveImages={(images) => {
                   saveProviderImagesToFirestore(images);
@@ -315,6 +321,210 @@ const ProviderSettingsPage: React.FC = () => {
             packages={providerData?.packages || []}
             onPackagesChange={(packages) => {
               updateProviderProperty("packages", packages);
+            }}
+          />
+        </div>
+      </div>
+      <div className="w-full bg-white rounded-md p-4 shadow-sm max-w-[1024px] mx-auto">
+        <h1 className="text-2xl font-bold mb-1">
+          Setări Informații de Contact
+        </h1>
+        <p>
+          Gestionează informațiile tale de contact afișate pe profilul public.
+        </p>
+        <FieldSet className="py-4">
+          <FieldGroup>
+            <Field orientation="responsive">
+              <FieldContent className="max-w-[300px] flex-[1_1_100%]">
+                <FieldLabel htmlFor="phone">Telefon</FieldLabel>
+                <FieldDescription>
+                  Numărul tău de telefon pentru contact direct
+                </FieldDescription>
+              </FieldContent>
+              <Input
+                onChange={(e) => {
+                  updateProviderProperty(
+                    "contactSettings.phone",
+                    e.target.value
+                  );
+                }}
+                value={providerData?.contactSettings?.phone ?? ""}
+                id="phone"
+                placeholder="Număr de telefon"
+                required
+                className="!w-full"
+              />
+            </Field>
+            <FieldSeparator />
+            <Field orientation="responsive">
+              <FieldContent className="max-w-[300px] flex-[1_1_100%]">
+                <FieldLabel htmlFor="email">Email</FieldLabel>
+                <FieldDescription>
+                  Adresa ta de email pentru contact direct
+                </FieldDescription>
+              </FieldContent>
+              <Input
+                onChange={(e) => {
+                  updateProviderProperty(
+                    "contactSettings.email",
+                    e.target.value
+                  );
+                }}
+                value={providerData?.contactSettings?.email ?? ""}
+                id="email"
+                placeholder="Adresă de email"
+                required
+                className="!w-full"
+              />
+            </Field>
+            <FieldSeparator />
+            <Field orientation="responsive">
+              <FieldContent className="max-w-[300px] flex-[1_1_100%]">
+                <FieldLabel htmlFor="website">Website</FieldLabel>
+                <FieldDescription>Adresa site-ului tău web</FieldDescription>
+              </FieldContent>
+              <Input
+                onChange={(e) => {
+                  updateProviderProperty(
+                    "contactSettings.website",
+                    e.target.value
+                  );
+                }}
+                value={providerData?.contactSettings?.website ?? ""}
+                id="website"
+                placeholder="Adresă site web"
+                required
+                className="!w-full"
+              />
+            </Field>
+            <FieldSeparator />
+            <Field orientation="responsive">
+              <FieldContent className="max-w-[300px] flex-[1_1_100%]">
+                <FieldLabel htmlFor="instagram">Instagram</FieldLabel>
+                <FieldDescription>
+                  Link către profilul tău de Instagram
+                </FieldDescription>
+              </FieldContent>
+              <Input
+                onChange={(e) => {
+                  updateProviderProperty(
+                    "contactSettings.website",
+                    e.target.value
+                  );
+                }}
+                value={providerData?.contactSettings?.instagram ?? ""}
+                id="instagram"
+                placeholder="Link profil Instagram"
+                required
+                className="!w-full"
+              />
+            </Field>
+            <FieldSeparator />
+            <Field orientation="responsive">
+              <FieldContent className="max-w-[300px] flex-[1_1_100%]">
+                <FieldLabel htmlFor="tiktok">Tiktok</FieldLabel>
+                <FieldDescription>
+                  Link către profilul tău de Tiktok
+                </FieldDescription>
+              </FieldContent>
+              <Input
+                onChange={(e) => {
+                  updateProviderProperty(
+                    "contactSettings.website",
+                    e.target.value
+                  );
+                }}
+                value={providerData?.contactSettings?.tiktok ?? ""}
+                id="tiktok"
+                placeholder="Link profil Tiktok"
+                required
+                className="!w-full"
+              />
+            </Field>
+
+            <FieldSeparator />
+            <Field orientation="responsive" className="relative">
+              {user?.providerPlan !== "pro" && (
+                <div className="absolute inset-0 bg-white/80 backdrop-blur-xs rounded-md flex items-center justify-center z-10">
+                  <div className="text-center p-4 bg-white rounded-lg shadow-lg border">
+                    <h3 className="text-sm font-semibold mb-1">
+                      Doar pentru Pro
+                    </h3>
+                    <p className="text-xs text-gray-600 mb-2">
+                      Calendarul de programări este disponibil doar pentru
+                      utilizatorii cu planul Pro.
+                    </p>
+                    <Button variant="default" size="sm">
+                      Upgrade la Pro
+                    </Button>
+                  </div>
+                </div>
+              )}
+              <FieldContent className="max-w-[300px] flex-[1_1_100%]">
+                <FieldLabel htmlFor="calendar">Calendar programări</FieldLabel>
+                <FieldDescription>
+                  Pentru a afisa calendarul de programari este necesar sa aveti
+                  cont pe{" "}
+                  <Link
+                    href="https://calendly.com/"
+                    target="_blank"
+                    className="text-primary"
+                  >
+                    Calendly
+                  </Link>{" "}
+                  si sa introduceti link-ul aici.
+                  <br />
+                  Puteti folosi acest ghid pentru integrare:{" "}
+                  <Link
+                    className="text-primary"
+                    href="https://help.calendly.com/hc/en-us/articles/223147027-How-to-share-your-Calendly-link"
+                    target="_blank"
+                  >
+                    aici
+                  </Link>
+                  , este necesar sa folositi link-ul de tip 'Inline Embed.'
+                </FieldDescription>
+              </FieldContent>
+              <Input
+                onChange={(e) => {
+                  if (user?.providerPlan !== "pro") return;
+                  updateProviderProperty(
+                    "contactSettings.calendar",
+                    e.target.value
+                  );
+                }}
+                value={providerData?.contactSettings?.calendar ?? ""}
+                id="calendar"
+                placeholder="Embed Calendly"
+                required
+                className="!w-full"
+                disabled={user?.providerPlan !== "pro"}
+              />
+            </Field>
+          </FieldGroup>
+        </FieldSet>
+      </div>
+      <div className="w-full bg-white rounded-md p-4 shadow-sm max-w-[1024px] mx-auto relative">
+        {user?.providerPlan !== "pro" && (
+          <div className="absolute inset-0 bg-white/80 backdrop-blur-xs rounded-md flex items-center justify-center z-10">
+            <div className="text-center p-6 bg-white rounded-lg shadow-lg border">
+              <h3 className="text-lg font-semibold mb-2">Doar pentru Pro</h3>
+              <p className="text-gray-600 mb-4">
+                Secțiunea FAQ este disponibilă doar pentru utilizatorii cu
+                planul Pro.
+              </p>
+              <Button variant="default">Upgrade la Pro</Button>
+            </div>
+          </div>
+        )}
+        <h1 className="text-2xl font-bold mb-1">Setări Sectiune FAQ</h1>
+        <p>Aici poți gestiona întrebările frecvente afișate pe profilul tău</p>
+        <div>
+          <FAQManager
+            isPro={user?.providerPlan === "pro"}
+            faqs={providerData?.faqs || []}
+            onFaqsChange={(faqs) => {
+              updateProviderProperty("faqs", faqs);
             }}
           />
         </div>
@@ -503,6 +713,133 @@ const PackageDescriptionEditor = ({
           onChange(htmlContent || "");
         }}
       />
+    </div>
+  );
+};
+
+const FAQManager = ({
+  faqs,
+  onFaqsChange,
+  isPro,
+}: {
+  faqs: any[];
+  onFaqsChange: (faqs: any[]) => void;
+  isPro: boolean;
+}) => {
+  return (
+    <div className="mt-6">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg font-semibold">Întrebările tale frecvente</h3>
+        <Button
+          onClick={() => {
+            if (!isPro) {
+              alert(
+                "Funcționalitatea este disponibilă doar pentru planul Pro."
+              );
+              return;
+            }
+            const newFaq = {
+              id: Date.now().toString(),
+              question: "",
+              answer: "",
+              isActive: true,
+            };
+            onFaqsChange([...faqs, newFaq]);
+          }}
+          variant="outline"
+        >
+          Adaugă Întrebare
+        </Button>
+      </div>
+
+      {faqs.length === 0 ? (
+        <div className="text-center py-8 text-gray-500">
+          <p>Nu ai încă întrebări frecvente create.</p>
+          <p className="text-sm">
+            Creează prima întrebare pentru a ajuta clienții să înțeleagă mai
+            bine serviciile tale.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {faqs.map((faq, index) => (
+            <div key={faq.id} className="border rounded-lg p-4 bg-gray-50">
+              <div className="flex justify-between items-start mb-4">
+                <h4 className="font-medium">Întrebare #{index + 1}</h4>
+                <Button
+                  onClick={() => {
+                    const updatedFaqs = faqs.filter((_, i) => i !== index);
+                    onFaqsChange(updatedFaqs);
+                  }}
+                  variant="ghost"
+                  size="sm"
+                  className="text-red-600 hover:text-red-700"
+                >
+                  Șterge
+                </Button>
+              </div>
+
+              <div className="space-y-4 mb-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    Întrebare
+                  </label>
+                  <Input
+                    value={faq.question || ""}
+                    onChange={(e) => {
+                      const updatedFaqs = [...faqs];
+                      updatedFaqs[index] = {
+                        ...faq,
+                        question: e.target.value,
+                      };
+                      onFaqsChange(updatedFaqs);
+                    }}
+                    placeholder="ex: Care sunt tarifele pentru serviciile voastre?"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    Răspuns
+                  </label>
+                  <Textarea
+                    value={faq.answer || ""}
+                    onChange={(e) => {
+                      const updatedFaqs = [...faqs];
+                      updatedFaqs[index] = {
+                        ...faq,
+                        answer: e.target.value,
+                      };
+                      onFaqsChange(updatedFaqs);
+                    }}
+                    placeholder="ex: Tarifele noastre variază în funcție de serviciu..."
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id={`faq-active-${index}`}
+                  checked={faq.isActive !== false}
+                  onChange={(e) => {
+                    const updatedFaqs = [...faqs];
+                    updatedFaqs[index] = {
+                      ...faq,
+                      isActive: e.target.checked,
+                    };
+                    onFaqsChange(updatedFaqs);
+                  }}
+                  className="rounded"
+                />
+                <label htmlFor={`faq-active-${index}`} className="text-sm">
+                  Întrebare activă (vizibilă pentru clienți)
+                </label>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

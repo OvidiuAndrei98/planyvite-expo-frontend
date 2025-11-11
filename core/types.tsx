@@ -10,6 +10,7 @@ export interface User {
 
 export interface Provider {
   uid: string;
+  providerPlan: "free" | "pro";
   generalSettings: {
     displayName: string;
     images?: SortableImage[];
@@ -22,5 +23,19 @@ export interface Provider {
     name: string;
     price: number;
     currency: string;
+  }[];
+  contactSettings: {
+    phone: string;
+    email: string;
+    website: string;
+    instagram: string;
+    tiktok: string;
+    calendar: string;
+  };
+  faqs?: {
+    id: string;
+    question: string;
+    answer: string;
+    isActive: boolean;
   }[];
 }

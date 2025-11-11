@@ -25,6 +25,7 @@ import {
   AuthenticationState,
 } from "./context/authContext";
 import LoginPage from "@/app/login/page";
+import { Spinner } from "@/components/ui/spinner";
 
 /**
  * A component that manages user authentication state and protects routes.
@@ -226,7 +227,11 @@ export function AuthenticationBoundary({ children }: { children?: ReactNode }) {
       {(() => {
         // Loader cât timp auth e necunoscut
         if (authenticationState === AuthenticationState.Unknown) {
-          return <div>Loading...</div>;
+          return (
+            <div className="w-full h-screen flex items-center justify-center">
+              <Spinner color="#7b34f9" className="size-8" />
+            </div>
+          );
         }
 
         // Dacă ești autentificat și pe /login sau /register, nu arăta children (login form), doar loader și lasă useEffect-ul să redirecționeze
@@ -234,7 +239,11 @@ export function AuthenticationBoundary({ children }: { children?: ReactNode }) {
           authenticationState === AuthenticationState.Authenticated &&
           (pathname === "/login" || pathname === "/register")
         ) {
-          return <div>Loading...</div>;
+          return (
+            <div className="w-full h-screen flex items-center justify-center">
+              <Spinner color="#7b34f9" className="size-8" />
+            </div>
+          );
         }
 
         // Utilizator autentificat, afișează conținutul protejat

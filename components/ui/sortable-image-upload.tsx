@@ -137,7 +137,9 @@ export default function SortableImageUpload({
         if (allImages.length + newImages.length > maxFiles) {
           setErrors((prev) => [
             ...prev,
-            `Maxim ${maxFiles} imagini permise. Ai în prezent ${allImages.length} imagini.`,
+            maxFiles === 1
+              ? 'Este permisa o singura imagine, pentru a adauga mai multe upgradeaza la planul "Pro".'
+              : `Nu poti adauga mai mult de ${maxFiles} imagini.`,
           ]);
           return;
         }

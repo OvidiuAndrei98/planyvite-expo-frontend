@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import {
   Calendar,
   Facebook,
@@ -13,6 +13,7 @@ import {
   MinusIcon,
   Phone,
   PlusIcon,
+  Ticket,
   Twitter,
 } from "lucide-react";
 import {
@@ -33,6 +34,7 @@ import {
 } from "@/components/ui/carousel";
 import { queryProviderByIdService } from "@/service/provider/queryProviderById";
 import { Provider } from "@/core/types";
+import { Spinner } from "@/components/ui/spinner";
 
 const Page = () => {
   const [providerLoading, setProviderLoading] = useState(true);
@@ -52,10 +54,49 @@ const Page = () => {
     queryProviderById();
   }, [id]);
 
+  // Inject calendar embed code
+  useEffect(() => {
+    if (
+      provider?.contactSettings?.calendar &&
+      provider.providerPlan === "pro"
+    ) {
+      const calendarEmbedDiv = document.querySelector(".calendar-embed");
+      if (calendarEmbedDiv) {
+        // Clear existing content
+        calendarEmbedDiv.innerHTML = "";
+
+        // Create a temporary div to parse the HTML
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = provider.contactSettings.calendar || "";
+
+        // Move all elements to the target div
+        while (tempDiv.firstChild) {
+          calendarEmbedDiv.appendChild(tempDiv.firstChild);
+        }
+
+        // Execute any script tags
+        const scripts = calendarEmbedDiv.querySelectorAll("script");
+        scripts.forEach((script) => {
+          const newScript = document.createElement("script");
+          if (script.src) {
+            newScript.src = script.src;
+          } else {
+            newScript.textContent = script.textContent;
+          }
+          // Copy attributes
+          Array.from(script.attributes).forEach((attr) => {
+            newScript.setAttribute(attr.name, attr.value);
+          });
+          script.parentNode?.replaceChild(newScript, script);
+        });
+      }
+    }
+  }, [provider]);
+
   if (!provider || providerLoading) {
     return (
-      <div className="h-screen w-full flex items-center justify-center">
-        Loading...
+      <div className="w-full h-screen flex items-center justify-center bg-background">
+        <Spinner color="#7b34f9" className="size-8" />
       </div>
     );
   }
@@ -71,10 +112,18 @@ const Page = () => {
         </span>
       </div>
       <div className="provider-header mb-6 w-full">
-        <h1 className="text-3xl font-bold mb-2">
-          {provider.generalSettings.displayName}
-        </h1>
-        <p className="text-muted-foreground">
+        <div className="flex flex-col gap-2 items-start md:flex-row md:gap-4 md:items-center">
+          <h1 className="text-3xl font-bold">
+            {provider.generalSettings.displayName}
+          </h1>
+          {provider.providerPlan === "pro" && (
+            <span className="text-sm text-[#B46ACB] bg-[#F8E5FD] rounded-md px-2 py-1 font-medium">
+              Pro
+            </span>
+          )}
+        </div>
+
+        <p className="text-muted-foreground mt-2">
           {provider.generalSettings.category}
         </p>
       </div>
@@ -172,37 +221,74 @@ const Page = () => {
           ></iframe>
         </div>
       </div> */}
+      {provider.contactSettings?.calendar &&
+        provider.providerPlan === "pro" && (
+          <div className="provider-calendar w-full bg-white p-6 rounded-md shadow-sm mb-6">
+            <h3 className="text-2xl font-semibold mb-4">
+              Programează o întâlnire online
+            </h3>
+            <div className="calendar-embed w-full"></div>
+          </div>
+        )}
       <div className="provider-contact w-full bg-white p-6 rounded-md shadow-sm mb-6">
         <h3 className="text-2xl font-semibold mb-4">Informații de Contact</h3>
         <div className="contact-info flex flex-col gap-4">
-          <ContactCard provider={"provider.phone"} icon={<Phone />} />
-          <ContactCard provider={"provider.email"} icon={<Mail />} />
-          <ContactCard provider={"provider.website"} icon={<Globe />} />
-          <Link
-            href="https://calendly.com/contact-planyvite/30min"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex flex-row gap-4 bg-primary/5 border-1 border-primary p-2 rounded-md items-center"
-          >
-            <Calendar /> Programeaza o intalnire
-          </Link>
+          {provider.contactSettings?.phone && (
+            <ContactCard
+              provider={provider.contactSettings?.phone}
+              icon={<Phone />}
+            />
+          )}
+          {provider.contactSettings?.email && (
+            <ContactCard
+              provider={provider.contactSettings?.email}
+              icon={<Mail />}
+            />
+          )}
+          {provider.contactSettings?.website && (
+            <ContactCard
+              provider={provider.contactSettings?.website}
+              icon={<Globe />}
+            />
+          )}
+          {provider.contactSettings?.instagram && (
+            <ContactCard
+              provider={provider.contactSettings?.instagram}
+              icon={<Instagram />}
+            />
+          )}
+          {provider.contactSettings?.tiktok && (
+            <ContactCard
+              provider={provider.contactSettings?.tiktok}
+              icon={<Ticket />}
+            />
+          )}
+          {!provider.contactSettings?.phone &&
+            !provider.contactSettings?.email &&
+            !provider.contactSettings?.website &&
+            !provider.contactSettings?.instagram &&
+            !provider.contactSettings?.tiktok && (
+              <div className="text-muted-foreground">
+                Nu sunt informații disponibile
+              </div>
+            )}
         </div>
       </div>
-      <div className="provider-faq flex flex-col gap-4 mb-6">
-        <h3 className="text-2xl font-semibold mb-4">Întrebări Frecvente</h3>
-        <FAQItem
-          question="Care sunt serviciile oferite?"
-          answer="Oferim o gamă completă de servicii pentru evenimente, inclusiv decorațiuni, catering, sonorizare și iluminat profesional."
-        />
-        <FAQItem
-          question="Cum pot face o rezervare?"
-          answer="Puteți face o rezervare prin telefon, email sau prin intermediul site-ului nostru web. Echipa noastră vă va contacta în cel mai scurt timp."
-        />
-        <FAQItem
-          question="Care este politica de anulare?"
-          answer="Anulările făcute cu mai mult de 48 de ore înainte de eveniment nu implică costuri suplimentare. Pentru anulări în ultimele 48 de ore, se aplică o taxă de 25%."
-        />
-      </div>
+
+      {provider.faqs && provider.faqs.length > 0 && (
+        <div className="provider-faq flex flex-col gap-4 mb-6">
+          <h3 className="text-2xl font-semibold mb-4">Întrebări Frecvente</h3>
+          {provider.faqs
+            .filter((faq) => faq.isActive)
+            .map((faq) => (
+              <FAQItem
+                key={faq.id}
+                question={faq.question}
+                answer={faq.answer}
+              />
+            ))}
+        </div>
+      )}
       <footer className="bg-primary/30 p-4 rounded-xl text-center">
         <h3 className="text-2xl font-semibold mb-4">Planyvite Expo</h3>
         <div className="flex flex-col items-center gap-4">
