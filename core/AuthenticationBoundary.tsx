@@ -2,12 +2,9 @@
 
 import { ReactNode, useEffect, useState } from "react";
 import {
-  EmailAuthProvider,
   User as FirebaseUser,
   GoogleAuthProvider,
-  linkWithCredential,
-  linkWithPopup,
-  onAuthStateChanged,
+  onIdTokenChanged,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
@@ -26,6 +23,7 @@ import {
 } from "./context/authContext";
 import LoginPage from "@/app/login/page";
 import { Spinner } from "@/components/ui/spinner";
+import { getDetailedSubscriptionStatus } from "@/service/core/statusResolverService";
 
 /**
  * A component that manages user authentication state and protects routes.
@@ -45,17 +43,36 @@ export function AuthenticationBoundary({ children }: { children?: ReactNode }) {
   const router = useRouter();
 
   const pathname = usePathname();
-
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(firebaseAuth, async (user) => {
+    const unsubscribe = onIdTokenChanged(firebaseAuth, async (user) => {
       const currentPath =
         typeof window !== "undefined" ? window.location.pathname : pathname;
+
       if (user) {
+        // 1. Logică pentru Custom Claims și Abonament
+        // Forțează reîmprospătarea token-ului pentru a obține cele mai recente Custom Claims
+        const tokenResult = await user.getIdTokenResult(true);
+        const role = tokenResult.claims.stripeRole;
+        const isPremium = role === "pro";
+        console.log("Stare abonament:", role);
+        // Poți seta aici starea de premium/non-premium pentru a o folosi în toată aplicația
+        // De exemplu: setIsPremiumUser(isPremium);
+
+        if (!isPremium) {
+          // Dacă nu este premium (Custom Claim lipsă), află motivul (UX)
+          const detailedStatus = await getDetailedSubscriptionStatus(user.uid);
+
+          console.log("Stare detaliată abonament:", detailedStatus);
+        }
+
         setFirebaseUser(user);
         const appUser = await queryUserById(user.uid);
+        appUser.providerPlan = isPremium ? "pro" : "free";
         setUserDetails(appUser);
         setAuthenticationState(AuthenticationState.Authenticated);
+
         if (currentPath === "/login" || currentPath === "/register") {
+          // Redirecționează utilizatorul logat
           router.push("/dashboard");
         }
       } else {
@@ -63,13 +80,13 @@ export function AuthenticationBoundary({ children }: { children?: ReactNode }) {
         setUserDetails(null);
         setAuthenticationState(AuthenticationState.Unauthenticated);
       }
+
       setIsAuthReady(true);
     });
 
-    // Cleanup: anulează listener-ul când componenta se re-randează din cauza
-    // schimbării `pathname`-ului, pentru a evita acumularea de listeneri.
+    // Cleanup: anulează listener-ul la demontarea componentei
     return () => unsubscribe();
-  }, []);
+  }, [pathname]);
 
   async function updateMissingUserProperties(user: FirebaseUser) {
     if (!user.photoURL && user.providerData[0]?.photoURL) {
@@ -106,7 +123,6 @@ export function AuthenticationBoundary({ children }: { children?: ReactNode }) {
           email: user.email!,
           displayName: user.displayName || null,
           photoURL: user.photoURL || null,
-          providerPlan: "free",
         };
         await addUser(newUser);
       }
@@ -165,7 +181,6 @@ export function AuthenticationBoundary({ children }: { children?: ReactNode }) {
           email: user.email!,
           displayName: user.displayName || "",
           photoURL: user.photoURL || null,
-          providerPlan: "free",
         };
         await addUser(newUser);
       }

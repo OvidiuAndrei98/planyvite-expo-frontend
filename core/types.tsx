@@ -5,12 +5,12 @@ export interface User {
   email: string;
   displayName: string | null;
   photoURL: string | null;
-  providerPlan: "free" | "pro";
+  providerPlan?: "free" | "pro";
 }
 
 export interface Provider {
   uid: string;
-  providerPlan: "free" | "pro";
+  providerPlan?: "free" | "pro";
   isValidProvider: boolean;
   generalSettings: {
     displayName: string;

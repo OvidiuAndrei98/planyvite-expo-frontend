@@ -168,9 +168,9 @@ const Page = () => {
 
           <div className="provider-details w-full bg-white p-6 rounded-md shadow-sm">
             <h3 className="text-2xl font-semibold mb-4">Detalii Furnizor</h3>
-            <p className="text-base text-foreground mb-6">
+            <div className="text-base text-foreground mb-6">
               <MarkdownViewer content={provider.generalSettings.description} />
-            </p>
+            </div>
           </div>
 
           {provider.contactSettings?.calendar &&
