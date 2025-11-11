@@ -11,6 +11,7 @@ export interface User {
 export interface Provider {
   uid: string;
   providerPlan: "free" | "pro";
+  isValidProvider: boolean;
   generalSettings: {
     displayName: string;
     images?: SortableImage[];

@@ -36,17 +36,14 @@ import { updateProviderService } from "@/service/provider/updateProviderService"
 import Link from "next/link";
 import { Textarea } from "@/components/ui/textarea";
 import { Spinner } from "@/components/ui/spinner";
+import { is } from "zod/v4/locales";
 
 const ProviderSettingsPage: React.FC = () => {
   const user = useAuth().userDetails;
-  //   const [providerDescription, setProviderDescription] = useState<string>("");
-  //   const [providerDisplayName, setProviderDisplayName] = useState<string>("");
-  //   const [providerImages, setProviderImages] = useState<SortableImage[]>([]);
-  //   const [providerLocations, setProviderLocations] = useState<string[]>([]);
-  //   const [providerCategory, setProviderCategory] = useState<string>("");
   const [isValidProvider, setIsValidProvider] = useState<boolean>(false);
   const [providerData, setProviderData] = useState<Provider | null>(null);
   const [providerLoading, setProviderLoading] = useState<boolean>(true);
+  const [saving, setSaving] = useState<boolean>(false);
 
   const quillRef = useRef<Quill | null>(null);
 
@@ -108,15 +105,15 @@ const ProviderSettingsPage: React.FC = () => {
         providerData.generalSettings.description.trim() !== "";
       const hasImages =
         (providerData?.generalSettings?.images?.length ?? 0) > 0;
-      setIsValidProvider(
-        !!(
-          hasName &&
-          hasCategory &&
-          hasLocations &&
-          hasDescription &&
-          hasImages
-        )
+
+      const isValid = !!(
+        hasName &&
+        hasCategory &&
+        hasLocations &&
+        hasDescription &&
+        hasImages
       );
+      setIsValidProvider(isValid);
     };
 
     validateProvider();
@@ -136,18 +133,25 @@ const ProviderSettingsPage: React.FC = () => {
     }
   };
 
-  const updateProvider = () => {
+  const updateProvider = async () => {
     if (!user || !providerData) return;
 
     const providerDataWithoutImages = {
       ...providerData,
       uid: user.uid,
+      isValidProvider: isValidProvider,
       generalSettings: {
         ...providerData.generalSettings,
         images: undefined,
       },
     };
-    updateProviderService(user.uid, providerDataWithoutImages);
+    try {
+      setSaving(true);
+      await updateProviderService(user.uid, providerDataWithoutImages);
+      setSaving(false);
+    } catch (error) {
+      setSaving(false);
+    }
   };
 
   return providerLoading ? (
@@ -158,6 +162,7 @@ const ProviderSettingsPage: React.FC = () => {
     <div className="flex flex-col w-full h-full bg-background p-[var(--padding-sm)] overflow-auto gap-6">
       <div className="flex justify-end items-center max-w-[1024px] mx-auto w-full sticky top-0 z-20 rounded-md gap-4">
         <Button variant="default" onClick={updateProvider}>
+          {saving && <Spinner />}
           Salvează Setările
         </Button>
       </div>
@@ -408,7 +413,7 @@ const ProviderSettingsPage: React.FC = () => {
               <Input
                 onChange={(e) => {
                   updateProviderProperty(
-                    "contactSettings.website",
+                    "contactSettings.instagram",
                     e.target.value
                   );
                 }}
@@ -430,7 +435,7 @@ const ProviderSettingsPage: React.FC = () => {
               <Input
                 onChange={(e) => {
                   updateProviderProperty(
-                    "contactSettings.website",
+                    "contactSettings.tiktok",
                     e.target.value
                   );
                 }}

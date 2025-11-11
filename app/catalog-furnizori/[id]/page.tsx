@@ -253,13 +253,17 @@ const Page = () => {
           )}
           {provider.contactSettings?.instagram && (
             <ContactCard
-              provider={provider.contactSettings?.instagram}
+              provider={"Instagram"}
+              clickable={true}
+              url={provider.contactSettings?.instagram}
               icon={<Instagram />}
             />
           )}
           {provider.contactSettings?.tiktok && (
             <ContactCard
-              provider={provider.contactSettings?.tiktok}
+              provider={"TikTok"}
+              clickable={true}
+              url={provider.contactSettings?.tiktok}
               icon={<Ticket />}
             />
           )}
@@ -349,14 +353,23 @@ const Page = () => {
 export default Page;
 
 const ContactCard = ({
+  clickable = false,
+  url,
   provider,
   icon,
 }: {
   provider: any;
   icon: React.ReactNode;
+  clickable?: boolean;
+  url?: string;
 }) => {
   return (
-    <div className="flex flex-row gap-4 bg-primary/5 border-1 border-primary p-2 rounded-md items-center">
+    <div
+      className={`flex flex-row gap-4 bg-primary/5 border-1 border-primary p-2 rounded-md items-center${
+        clickable ? " cursor-pointer" : ""
+      }`}
+      onClick={clickable ? () => window.open(url, "_blank") : undefined}
+    >
       {icon} {provider}
     </div>
   );

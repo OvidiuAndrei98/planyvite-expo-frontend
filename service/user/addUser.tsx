@@ -14,6 +14,10 @@ export const addUser = async (user: User): Promise<void> => {
         uid: user.uid,
         generalSettings: {},
         packages: [],
+        contactSettings: {},
+        faqs: [],
+        isValidProvider: false,
+        providerPlan: "free",
       });
     }
   } catch (error) {

@@ -173,6 +173,7 @@ export default function Catalog() {
                 return 1;
               return 0;
             })
+            .filter((provider) => provider.isValidProvider)
             .map((provider) => (
               <div
                 key={provider.uid}
