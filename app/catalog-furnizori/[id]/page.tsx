@@ -3,8 +3,18 @@
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { dummyProviders } from "../page";
-import { Globe, Mail, MinusIcon, Phone, PlusIcon } from "lucide-react";
+import {
+  Calendar,
+  Facebook,
+  Globe,
+  Instagram,
+  Linkedin,
+  Mail,
+  MinusIcon,
+  Phone,
+  PlusIcon,
+  Twitter,
+} from "lucide-react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -14,18 +24,35 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MarkdownViewer from "@/components/markdown-viewer/MarkdownViewe";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import { queryProviderByIdService } from "@/service/provider/queryProviderById";
+import { Provider } from "@/core/types";
 
 const Page = () => {
-  const [provider, setProvider] = useState<any>(null);
+  const [providerLoading, setProviderLoading] = useState(true);
+  const [provider, setProvider] = useState<Provider>();
   const { id } = useParams<{
     id: string;
   }>();
 
+  const queryProviderById = async () => {
+    setProviderLoading(true);
+    const provider = await queryProviderByIdService(id);
+    setProvider(provider);
+    setProviderLoading(false);
+  };
+
   useEffect(() => {
-    const foundProvider = dummyProviders.find((p) => p.id === Number(id));
-    setProvider(foundProvider || null);
+    queryProviderById();
   }, [id]);
-  if (!provider) {
+
+  if (!provider || providerLoading) {
     return (
       <div className="h-screen w-full flex items-center justify-center">
         Loading...
@@ -39,25 +66,56 @@ const Page = () => {
           <span className="text-muted-foreground">Catalog furnizori</span>
         </Link>
         <span className="mx-2 text-muted-foreground">/</span>
-        <span className="font-medium">{provider.name}</span>
+        <span className="font-medium">
+          {provider.generalSettings.displayName}
+        </span>
       </div>
       <div className="provider-header mb-6 w-full">
-        <h1 className="text-3xl font-bold mb-2">{provider.name}</h1>
-        <p className="text-muted-foreground">{provider.category}</p>
+        <h1 className="text-3xl font-bold mb-2">
+          {provider.generalSettings.displayName}
+        </h1>
+        <p className="text-muted-foreground">
+          {provider.generalSettings.category}
+        </p>
       </div>
       <div className="provider-image mb-6 w-full">
-        <Image
-          src={provider.thumbnailPhoto}
-          width={400}
-          height={300}
-          alt={provider.name}
-          className="w-full h-auto rounded-md object-cover"
-        />
+        <Carousel>
+          <CarouselContent>
+            {provider.generalSettings.images &&
+            provider.generalSettings.images.length > 0 ? (
+              provider.generalSettings.images.map((image, index) => (
+                <CarouselItem key={index}>
+                  <Image
+                    src={image.src}
+                    width={1024}
+                    height={1024}
+                    alt={`${provider.generalSettings.displayName} image ${
+                      index + 1
+                    }`}
+                    className="w-full h-100 rounded-md object-cover"
+                  />
+                </CarouselItem>
+              ))
+            ) : (
+              <CarouselItem>
+                <Image
+                  src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&h=300&fit=crop"
+                  width={1024}
+                  height={1024}
+                  alt="Placeholder image"
+                  className="w-full h-full object-cover"
+                />
+              </CarouselItem>
+            )}
+          </CarouselContent>
+          <CarouselNext />
+          <CarouselPrevious />
+        </Carousel>
       </div>
       <div className="provider-details w-full bg-white p-6 rounded-md shadow-sm mb-6">
         <h3 className="text-2xl font-semibold mb-4">Detalii Furnizor</h3>
         <p className="text-base text-foreground mb-6">
-          {provider.descriptions}
+          <MarkdownViewer content={provider.generalSettings.description} />
         </p>
       </div>
       <div className="provider-packages w-full mb-6">
@@ -76,35 +134,58 @@ const Page = () => {
                 </TabsTrigger>
               ))
             ) : (
-              <div>No packages available.</div>
+              <div>Niciun pachet disponibil.</div>
             )}
           </TabsList>
           {provider.packages && provider.packages.length > 0 ? (
             provider.packages.map((pkg: any, index: number) => (
               <TabsContent key={index} value={pkg.name}>
-                <div className="package-card bg-white p-2 rounded-md shadow-sm">
+                <div className="package-card bg-white p-6 rounded-md shadow-sm">
                   <h4 className="text-xl font-semibold mb-2">{pkg.name}</h4>
-                  <div className="text-muted-foreground mb-4">
-                    <MarkdownViewer content={pkg.shortDescription} />
-                  </div>
                   <div className="mb-4">
-                    <MarkdownViewer content={pkg.details} />
+                    <MarkdownViewer content={pkg.description} />
                   </div>
-                  <span className="text-2xl font-bold">{pkg.price} Lei</span>
+                  <span className="text-2xl font-bold">
+                    {pkg.price} {pkg.currency}
+                  </span>
                 </div>
               </TabsContent>
             ))
           ) : (
-            <div>No packages available.</div>
+            <div>Niciun pachet disponibil.</div>
           )}
         </Tabs>
       </div>
+      {/* <div className="provider-calendar bg-white p-2 rounded-md shadow-sm mb-6">
+        <h3 className="text-2xl font-semibold mb-4">
+          Calendar Disponibilitate
+        </h3>
+        <div className="big-container w-full sm:block relative pb-[75%] overflow-hidden rounded-lg shadow-inner mb-6">
+          <iframe
+            id="calendarDesktopEmbed"
+            className="absolute inset-0 w-full h-full border-0"
+            src={`https://calendar.google.com/calendar/embed?mode=MONTH&height=700&wkst=2&bgcolor=%23ffffff&ctz=Europe%2FBucharest&src=${encodeURI(
+              provider.email
+            )}`}
+            scrolling="no"
+            title="Google Calendar Month View"
+          ></iframe>
+        </div>
+      </div> */}
       <div className="provider-contact w-full bg-white p-6 rounded-md shadow-sm mb-6">
         <h3 className="text-2xl font-semibold mb-4">Informații de Contact</h3>
         <div className="contact-info flex flex-col gap-4">
-          <ContactCard provider={provider.phone} icon={<Phone />} />
-          <ContactCard provider={provider.email} icon={<Mail />} />
-          <ContactCard provider={provider.website} icon={<Globe />} />
+          <ContactCard provider={"provider.phone"} icon={<Phone />} />
+          <ContactCard provider={"provider.email"} icon={<Mail />} />
+          <ContactCard provider={"provider.website"} icon={<Globe />} />
+          <Link
+            href="https://calendly.com/contact-planyvite/30min"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex flex-row gap-4 bg-primary/5 border-1 border-primary p-2 rounded-md items-center"
+          >
+            <Calendar /> Programeaza o intalnire
+          </Link>
         </div>
       </div>
       <div className="provider-faq flex flex-col gap-4 mb-6">
@@ -122,10 +203,59 @@ const Page = () => {
           answer="Anulările făcute cu mai mult de 48 de ore înainte de eveniment nu implică costuri suplimentare. Pentru anulări în ultimele 48 de ore, se aplică o taxă de 25%."
         />
       </div>
-      <div className="bg-primary/30 p-4 rounded">
+      <footer className="bg-primary/30 p-4 rounded-xl text-center">
         <h3 className="text-2xl font-semibold mb-4">Planyvite Expo</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-      </div>
+        <div className="flex flex-col items-center gap-4">
+          <div>
+            <h4 className="text-lg font-semibold mb-2">Descoperă mai mult</h4>
+            <p className="text-base mb-2">
+              Explorează catalogul nostru extins de furnizori și găsește tot ce
+              ai nevoie pentru evenimentul tău.
+            </p>
+            <Link
+              href="/catalog-furnizori"
+              className="text-primary font-medium underline"
+            >
+              Vezi toți furnizorii
+            </Link>
+          </div>
+          <div className="w-full h-px bg-gray-300 my-4"></div>
+          <div className="flex flex-row gap-4 justify-center">
+            <Link
+              href="https://facebook.com/planyvite"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 bg-primary/10 rounded-full hover:bg-primary/20 transition-colors"
+            >
+              <Facebook className="size-5" />
+            </Link>
+            <Link
+              href="https://instagram.com/planyvite"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 bg-primary/10 rounded-full hover:bg-primary/20 transition-colors"
+            >
+              <Instagram className="size-5" />
+            </Link>
+            <Link
+              href="https://twitter.com/planyvite"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 bg-primary/10 rounded-full hover:bg-primary/20 transition-colors"
+            >
+              <Twitter className="size-5" />
+            </Link>
+            <Link
+              href="https://linkedin.com/company/planyvite"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 bg-primary/10 rounded-full hover:bg-primary/20 transition-colors"
+            >
+              <Linkedin className="size-5" />
+            </Link>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

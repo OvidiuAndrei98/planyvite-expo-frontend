@@ -17,16 +17,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
+import { Provider } from "@/core/types";
+import { queryProvidersService } from "@/service/provider/queryProviders";
 import { FilterIcon } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const dummyProviders = [
   {
     id: 1,
     name: "Elegant Catering Solutions",
     phone: "0712345678",
-    email: "contact@elegantcatering.ro",
+    email: "contact@code-lab.ro",
     website: "www.elegantcatering.ro",
     thumbnailPhoto:
       "https://images.unsplash.com/photo-1555244162-803834f70033?w=400&h=300&fit=crop",
@@ -323,6 +325,21 @@ export default function Catalog() {
   const [priceRange, setPriceRange] = useState([0, 20000]);
   const [location, setLocation] = useState("");
   const [category, setCategory] = useState("");
+  const [providers, setProviders] = useState<Provider[]>([]);
+  const [providersLoading, setProvidersLoading] = useState(false);
+
+  const queryProviders = async () => {
+    // TODO: Implement API call to fetch providers based on filters
+    setProvidersLoading(true);
+    const providers = await queryProvidersService();
+    setProviders(providers);
+    setProvidersLoading(false);
+  };
+
+  // Initial fetch of providers
+  useEffect(() => {
+    queryProviders();
+  }, []);
 
   const hasActiveFilters =
     location !== "" ||
@@ -335,6 +352,30 @@ export default function Catalog() {
     setCategory("");
     setPriceRange([0, 20000]);
   };
+
+  useEffect(() => {
+    // Log current filter values for debugging
+    // console.log('Filters changed:', { priceRange, location, category });
+    // Here you could add API calls to fetch filtered providers
+    // Example:
+    // const fetchProviders = async () => {
+    //   const params = new URLSearchParams();
+    //   if (location) params.append('location', location);
+    //   if (category) params.append('category', category);
+    //   params.append('minPrice', priceRange[0].toString());
+    //   params.append('maxPrice', priceRange[1].toString());
+    //
+    //   try {
+    //     const response = await fetch(`/api/providers?${params}`);
+    //     const data = await response.json();
+    //     setProviders(data);
+    //   } catch (error) {
+    //     console.error('Failed to fetch providers:', error);
+    //   }
+    // };
+    //
+    // fetchProviders();
+  }, [priceRange, location, category]);
 
   return (
     <div className="grid grid-cols-1 max-w-[1024px] mx-auto px-[var(--padding-md)] py-[var(--padding-lg)] justify-center">
@@ -416,27 +457,34 @@ export default function Catalog() {
           </div>
         </div>
         <div className="providers-section">
-          {dummyProviders.map((provider) => (
+          {providers.map((provider) => (
             <div
-              key={provider.id}
+              key={provider.uid}
               className="bg-card rounded-lg border shadow-sm overflow-hidden mb-4"
             >
               <div className="aspect-video w-full overflow-hidden">
                 <img
-                  src={provider.thumbnailPhoto}
-                  alt={provider.name}
+                  src={
+                    provider.generalSettings.images?.[0]?.src ||
+                    "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&h=300&fit=crop"
+                  }
+                  alt={provider.generalSettings.displayName}
                   className="w-full h-full object-cover"
                 />
               </div>
               <div className="p-4">
-                <h4 className="font-semibold text-lg mb-2">{provider.name}</h4>
+                <h4 className="font-semibold text-lg mb-2">
+                  {provider.generalSettings.displayName}
+                </h4>
                 <div className="text-muted-foreground text-sm mb-4 relative overflow-hidden">
                   <MarkdownViewer
-                    content={provider.descriptions.slice(0, 250) + "..."}
+                    content={
+                      provider.generalSettings.description.slice(0, 250) + "..."
+                    }
                   />
                   <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-card to-transparent pointer-events-none"></div>
                 </div>
-                <Link href={`/catalog-furnizori/${provider.id}`}>
+                <Link href={`/catalog-furnizori/${provider.uid}`}>
                   <Button variant="default" className="w-full">
                     Vezi Detalii
                   </Button>
