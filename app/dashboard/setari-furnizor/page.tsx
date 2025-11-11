@@ -617,7 +617,9 @@ const PackageManager = ({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-1">Preț</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Preț (0 pentru a ascunde pretul)
+                  </label>
                   <div className="flex gap-2">
                     <Input
                       type="number"
