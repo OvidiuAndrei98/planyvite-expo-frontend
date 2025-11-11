@@ -2,9 +2,8 @@
 
 import { useParams } from "next/navigation";
 import Image from "next/image";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  Calendar,
   Facebook,
   Globe,
   Instagram,
@@ -167,44 +166,49 @@ const Page = () => {
           <MarkdownViewer content={provider.generalSettings.description} />
         </p>
       </div>
-      <div className="provider-packages w-full mb-6">
-        <Tabs
-          defaultValue={
-            provider.packages && provider.packages.length > 0
-              ? provider.packages[0].name
-              : ""
-          }
-        >
-          <TabsList>
+      {provider.packages && provider.packages.length > 0 && (
+        <div className="provider-packages w-full mb-6">
+          <Tabs
+            defaultValue={
+              provider.packages && provider.packages.length > 0
+                ? provider.packages[0].name
+                : ""
+            }
+          >
+            <TabsList>
+              {provider.packages && provider.packages.length > 0 ? (
+                provider.packages.map((pkg: any, index: number) => (
+                  <TabsTrigger key={index} value={pkg.name}>
+                    {pkg.name}
+                  </TabsTrigger>
+                ))
+              ) : (
+                <div>Niciun pachet disponibil.</div>
+              )}
+            </TabsList>
             {provider.packages && provider.packages.length > 0 ? (
               provider.packages.map((pkg: any, index: number) => (
-                <TabsTrigger key={index} value={pkg.name}>
-                  {pkg.name}
-                </TabsTrigger>
+                <TabsContent key={index} value={pkg.name}>
+                  <div className="package-card bg-white p-6 rounded-md shadow-sm">
+                    <h4 className="text-xl font-semibold mb-2">{pkg.name}</h4>
+                    <div className="mb-4">
+                      <MarkdownViewer content={pkg.description} />
+                    </div>
+                    {Number.isFinite(pkg.price) && Number(pkg.price) > 0 && (
+                      <span className="text-2xl font-bold">
+                        {pkg.price} {pkg.currency}
+                      </span>
+                    )}
+                  </div>
+                </TabsContent>
               ))
             ) : (
               <div>Niciun pachet disponibil.</div>
             )}
-          </TabsList>
-          {provider.packages && provider.packages.length > 0 ? (
-            provider.packages.map((pkg: any, index: number) => (
-              <TabsContent key={index} value={pkg.name}>
-                <div className="package-card bg-white p-6 rounded-md shadow-sm">
-                  <h4 className="text-xl font-semibold mb-2">{pkg.name}</h4>
-                  <div className="mb-4">
-                    <MarkdownViewer content={pkg.description} />
-                  </div>
-                  <span className="text-2xl font-bold">
-                    {pkg.price} {pkg.currency}
-                  </span>
-                </div>
-              </TabsContent>
-            ))
-          ) : (
-            <div>Niciun pachet disponibil.</div>
-          )}
-        </Tabs>
-      </div>
+          </Tabs>
+        </div>
+      )}
+
       {/* <div className="provider-calendar bg-white p-2 rounded-md shadow-sm mb-6">
         <h3 className="text-2xl font-semibold mb-4">
           Calendar Disponibilitate
