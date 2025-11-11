@@ -36,7 +36,6 @@ import { updateProviderService } from "@/service/provider/updateProviderService"
 import Link from "next/link";
 import { Textarea } from "@/components/ui/textarea";
 import { Spinner } from "@/components/ui/spinner";
-import { is } from "zod/v4/locales";
 
 const ProviderSettingsPage: React.FC = () => {
   const user = useAuth().userDetails;

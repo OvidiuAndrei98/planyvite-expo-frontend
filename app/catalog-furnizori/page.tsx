@@ -163,7 +163,7 @@ export default function Catalog() {
             </Button>
           </div>
         </div>
-        <div className="providers-section">
+        <div className="providers-section w-full grid grid-cols-1 md:grid-cols-3 gap-6">
           {providers
             .sort((a, b) => {
               // Show pro providers first
@@ -177,7 +177,7 @@ export default function Catalog() {
             .map((provider) => (
               <div
                 key={provider.uid}
-                className="bg-card rounded-lg border shadow-sm overflow-hidden mb-4"
+                className="bg-card rounded-lg border shadow-sm overflow-hidden mb-4 grid grid-rows-[auto_1fr_auto]"
               >
                 <div className="aspect-video w-full overflow-hidden">
                   <img
@@ -189,7 +189,7 @@ export default function Catalog() {
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <div className="p-4">
+                <div className="p-4 flex flex-col">
                   <h4 className="font-semibold text-lg mb-2">
                     {provider.generalSettings.displayName}
                     {provider.providerPlan === "pro" && (
@@ -199,14 +199,16 @@ export default function Catalog() {
                     )}
                   </h4>
                   <div className="text-muted-foreground text-sm mb-4 relative overflow-hidden">
-                    <MarkdownViewer
-                      content={
-                        provider.generalSettings.description.slice(0, 250) +
-                        "..."
-                      }
-                    />
-                    <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-card to-transparent pointer-events-none"></div>
+                    <div className="line-clamp-5">
+                      {provider.generalSettings.description
+                        .replace(/<[^>]*>/g, " ")
+                        .trim()
+                        .slice(0, 350)}
+                      ...
+                    </div>
                   </div>
+                </div>
+                <div className="p-4 pt-0">
                   <Link href={`/catalog-furnizori/${provider.uid}`}>
                     <Button variant="default" className="w-full">
                       Vezi Detalii

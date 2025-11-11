@@ -110,6 +110,7 @@ const Page = () => {
           {provider.generalSettings.displayName}
         </span>
       </div>
+
       <div className="provider-header mb-6 w-full">
         <div className="flex flex-col gap-2 items-start md:flex-row md:gap-4 md:items-center">
           <h1 className="text-3xl font-bold">
@@ -121,182 +122,191 @@ const Page = () => {
             </span>
           )}
         </div>
-
         <p className="text-muted-foreground mt-2">
           {provider.generalSettings.category}
         </p>
       </div>
-      <div className="provider-image mb-6 w-full">
-        <Carousel>
-          <CarouselContent>
-            {provider.generalSettings.images &&
-            provider.generalSettings.images.length > 0 ? (
-              provider.generalSettings.images.map((image, index) => (
-                <CarouselItem key={index}>
-                  <Image
-                    src={image.src}
-                    width={1024}
-                    height={1024}
-                    alt={`${provider.generalSettings.displayName} image ${
-                      index + 1
-                    }`}
-                    className="w-full h-100 rounded-md object-cover"
-                  />
-                </CarouselItem>
-              ))
-            ) : (
-              <CarouselItem>
-                <Image
-                  src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&h=300&fit=crop"
-                  width={1024}
-                  height={1024}
-                  alt="Placeholder image"
-                  className="w-full h-full object-cover"
-                />
-              </CarouselItem>
-            )}
-          </CarouselContent>
-          <CarouselNext />
-          <CarouselPrevious />
-        </Carousel>
-      </div>
-      <div className="provider-details w-full bg-white p-6 rounded-md shadow-sm mb-6">
-        <h3 className="text-2xl font-semibold mb-4">Detalii Furnizor</h3>
-        <p className="text-base text-foreground mb-6">
-          <MarkdownViewer content={provider.generalSettings.description} />
-        </p>
-      </div>
-      {provider.packages && provider.packages.length > 0 && (
-        <div className="provider-packages w-full mb-6">
-          <Tabs
-            defaultValue={
-              provider.packages && provider.packages.length > 0
-                ? provider.packages[0].name
-                : ""
-            }
-          >
-            <TabsList>
-              {provider.packages && provider.packages.length > 0 ? (
-                provider.packages.map((pkg: any, index: number) => (
-                  <TabsTrigger key={index} value={pkg.name}>
-                    {pkg.name}
-                  </TabsTrigger>
-                ))
-              ) : (
-                <div>Niciun pachet disponibil.</div>
-              )}
-            </TabsList>
-            {provider.packages && provider.packages.length > 0 ? (
-              provider.packages.map((pkg: any, index: number) => (
-                <TabsContent key={index} value={pkg.name}>
-                  <div className="package-card bg-white p-6 rounded-md shadow-sm">
-                    <h4 className="text-xl font-semibold mb-2">{pkg.name}</h4>
-                    <div className="mb-4">
-                      <MarkdownViewer content={pkg.description} />
-                    </div>
-                    {Number.isFinite(pkg.price) && Number(pkg.price) > 0 && (
-                      <span className="text-2xl font-bold">
-                        {pkg.price} {pkg.currency}
-                      </span>
-                    )}
-                  </div>
-                </TabsContent>
-              ))
-            ) : (
-              <div>Niciun pachet disponibil.</div>
-            )}
-          </Tabs>
-        </div>
-      )}
 
-      {/* <div className="provider-calendar bg-white p-2 rounded-md shadow-sm mb-6">
-        <h3 className="text-2xl font-semibold mb-4">
-          Calendar Disponibilitate
-        </h3>
-        <div className="big-container w-full sm:block relative pb-[75%] overflow-hidden rounded-lg shadow-inner mb-6">
-          <iframe
-            id="calendarDesktopEmbed"
-            className="absolute inset-0 w-full h-full border-0"
-            src={`https://calendar.google.com/calendar/embed?mode=MONTH&height=700&wkst=2&bgcolor=%23ffffff&ctz=Europe%2FBucharest&src=${encodeURI(
-              provider.email
-            )}`}
-            scrolling="no"
-            title="Google Calendar Month View"
-          ></iframe>
-        </div>
-      </div> */}
-      {provider.contactSettings?.calendar &&
-        provider.providerPlan === "pro" && (
-          <div className="provider-calendar w-full bg-white p-6 rounded-md shadow-sm mb-6">
-            <h3 className="text-2xl font-semibold mb-4">
-              Programează o întâlnire online
-            </h3>
-            <div className="calendar-embed w-full"></div>
+      {/* Desktop Grid Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        {/* Left Column - Main Content */}
+        <div className="lg:col-span-2 flex flex-col gap-6">
+          <div className="provider-image w-full">
+            <Carousel>
+              <CarouselContent>
+                {provider.generalSettings.images &&
+                provider.generalSettings.images.length > 0 ? (
+                  provider.generalSettings.images.map((image, index) => (
+                    <CarouselItem key={index}>
+                      <Image
+                        src={image.src}
+                        width={1024}
+                        height={1024}
+                        alt={`${provider.generalSettings.displayName} image ${
+                          index + 1
+                        }`}
+                        className="w-full h-100 rounded-md object-cover"
+                      />
+                    </CarouselItem>
+                  ))
+                ) : (
+                  <CarouselItem>
+                    <Image
+                      src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&h=300&fit=crop"
+                      width={1024}
+                      height={1024}
+                      alt="Placeholder image"
+                      className="w-full h-full object-cover"
+                    />
+                  </CarouselItem>
+                )}
+              </CarouselContent>
+              <CarouselNext />
+              <CarouselPrevious />
+            </Carousel>
           </div>
-        )}
-      <div className="provider-contact w-full bg-white p-6 rounded-md shadow-sm mb-6">
-        <h3 className="text-2xl font-semibold mb-4">Informații de Contact</h3>
-        <div className="contact-info flex flex-col gap-4">
-          {provider.contactSettings?.phone && (
-            <ContactCard
-              provider={provider.contactSettings?.phone}
-              icon={<Phone />}
-            />
-          )}
-          {provider.contactSettings?.email && (
-            <ContactCard
-              provider={provider.contactSettings?.email}
-              icon={<Mail />}
-            />
-          )}
-          {provider.contactSettings?.website && (
-            <ContactCard
-              provider={provider.contactSettings?.website}
-              icon={<Globe />}
-            />
-          )}
-          {provider.contactSettings?.instagram && (
-            <ContactCard
-              provider={"Instagram"}
-              clickable={true}
-              url={provider.contactSettings?.instagram}
-              icon={<Instagram />}
-            />
-          )}
-          {provider.contactSettings?.tiktok && (
-            <ContactCard
-              provider={"TikTok"}
-              clickable={true}
-              url={provider.contactSettings?.tiktok}
-              icon={<Ticket />}
-            />
-          )}
-          {!provider.contactSettings?.phone &&
-            !provider.contactSettings?.email &&
-            !provider.contactSettings?.website &&
-            !provider.contactSettings?.instagram &&
-            !provider.contactSettings?.tiktok && (
-              <div className="text-muted-foreground">
-                Nu sunt informații disponibile
+
+          <div className="provider-details w-full bg-white p-6 rounded-md shadow-sm">
+            <h3 className="text-2xl font-semibold mb-4">Detalii Furnizor</h3>
+            <p className="text-base text-foreground mb-6">
+              <MarkdownViewer content={provider.generalSettings.description} />
+            </p>
+          </div>
+
+          {provider.contactSettings?.calendar &&
+            provider.providerPlan === "pro" && (
+              <div className="provider-calendar w-full bg-white p-6 rounded-md shadow-sm">
+                <h3 className="text-2xl font-semibold mb-4">
+                  Programează o întâlnire online
+                </h3>
+                <div className="calendar-embed w-full"></div>
               </div>
             )}
+
+          {provider.faqs && provider.faqs.length > 0 && (
+            <div className="provider-faq flex flex-col gap-4">
+              <h3 className="text-2xl font-semibold mb-4">
+                Întrebări Frecvente
+              </h3>
+              {provider.faqs
+                .filter((faq) => faq.isActive)
+                .map((faq) => (
+                  <FAQItem
+                    key={faq.id}
+                    question={faq.question}
+                    answer={faq.answer}
+                  />
+                ))}
+            </div>
+          )}
+        </div>
+
+        {/* Right Column - Sticky Sidebar */}
+        <div className="lg:col-span-1">
+          <div className="sticky top-[90px] flex flex-col gap-6">
+            <div className="provider-contact w-full bg-white p-6 rounded-md shadow-sm">
+              <h3 className="text-2xl font-semibold mb-4">
+                Informații de Contact
+              </h3>
+              <div className="contact-info flex flex-col gap-4">
+                {provider.contactSettings?.phone && (
+                  <ContactCard
+                    provider={provider.contactSettings?.phone}
+                    icon={<Phone />}
+                  />
+                )}
+                {provider.contactSettings?.email && (
+                  <ContactCard
+                    provider={provider.contactSettings?.email}
+                    icon={<Mail />}
+                  />
+                )}
+                {provider.contactSettings?.website && (
+                  <ContactCard
+                    provider={provider.contactSettings?.website}
+                    icon={<Globe />}
+                  />
+                )}
+                {provider.contactSettings?.instagram && (
+                  <ContactCard
+                    provider={"Instagram"}
+                    clickable={true}
+                    url={provider.contactSettings?.instagram}
+                    icon={<Instagram />}
+                  />
+                )}
+                {provider.contactSettings?.tiktok && (
+                  <ContactCard
+                    provider={"TikTok"}
+                    clickable={true}
+                    url={provider.contactSettings?.tiktok}
+                    icon={<Ticket />}
+                  />
+                )}
+                {!provider.contactSettings?.phone &&
+                  !provider.contactSettings?.email &&
+                  !provider.contactSettings?.website &&
+                  !provider.contactSettings?.instagram &&
+                  !provider.contactSettings?.tiktok && (
+                    <div className="text-muted-foreground">
+                      Nu sunt informații disponibile
+                    </div>
+                  )}
+              </div>
+            </div>
+            {provider.packages && provider.packages.length > 0 && (
+              <div className="provider-packages w-full">
+                <Tabs
+                  defaultValue={
+                    provider.packages && provider.packages.length > 0
+                      ? provider.packages[0].name
+                      : ""
+                  }
+                >
+                  <TabsList>
+                    {provider.packages && provider.packages.length > 0 ? (
+                      provider.packages.map((pkg: any, index: number) => (
+                        <TabsTrigger
+                          key={index}
+                          value={pkg.name}
+                          className="flex-1"
+                        >
+                          {pkg.name}
+                        </TabsTrigger>
+                      ))
+                    ) : (
+                      <div>Niciun pachet disponibil.</div>
+                    )}
+                  </TabsList>
+                  {provider.packages && provider.packages.length > 0 ? (
+                    provider.packages.map((pkg: any, index: number) => (
+                      <TabsContent key={index} value={pkg.name}>
+                        <div className="package-card bg-white p-6 rounded-md shadow-sm max-h-[600px] overflow-y-auto">
+                          <h4 className="text-xl font-semibold mb-2">
+                            {pkg.name}
+                          </h4>
+                          <div className="mb-4">
+                            <MarkdownViewer content={pkg.description} />
+                          </div>
+                          {Number.isFinite(pkg.price) &&
+                            Number(pkg.price) > 0 && (
+                              <span className="text-2xl font-bold">
+                                {pkg.price} {pkg.currency}
+                              </span>
+                            )}
+                        </div>
+                      </TabsContent>
+                    ))
+                  ) : (
+                    <div>Niciun pachet disponibil.</div>
+                  )}
+                </Tabs>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      {provider.faqs && provider.faqs.length > 0 && (
-        <div className="provider-faq flex flex-col gap-4 mb-6">
-          <h3 className="text-2xl font-semibold mb-4">Întrebări Frecvente</h3>
-          {provider.faqs
-            .filter((faq) => faq.isActive)
-            .map((faq) => (
-              <FAQItem
-                key={faq.id}
-                question={faq.question}
-                answer={faq.answer}
-              />
-            ))}
-        </div>
-      )}
       <footer className="bg-primary/30 p-4 rounded-xl text-center">
         <h3 className="text-2xl font-semibold mb-4">Planyvite Expo</h3>
         <div className="flex flex-col items-center gap-4">
