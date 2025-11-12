@@ -36,6 +36,7 @@ import { updateProviderService } from "@/service/provider/updateProviderService"
 import Link from "next/link";
 import { Textarea } from "@/components/ui/textarea";
 import { Spinner } from "@/components/ui/spinner";
+import { useRouter } from "next/navigation";
 
 const ProviderSettingsPage: React.FC = () => {
   const user = useAuth().userDetails;
@@ -43,6 +44,7 @@ const ProviderSettingsPage: React.FC = () => {
   const [providerData, setProviderData] = useState<Provider | null>(null);
   const [providerLoading, setProviderLoading] = useState<boolean>(true);
   const [saving, setSaving] = useState<boolean>(false);
+  const router = useRouter();
 
   const quillRef = useRef<Quill | null>(null);
 
@@ -103,7 +105,8 @@ const ProviderSettingsPage: React.FC = () => {
         providerData?.generalSettings?.description &&
         providerData.generalSettings.description.trim() !== "";
       const hasImages =
-        (providerData?.generalSettings?.images?.length ?? 0) > 0;
+        providerData?.generalSettings?.images &&
+        providerData.generalSettings.images.length > 0;
 
       const isValid = !!(
         hasName &&
@@ -309,6 +312,7 @@ const ProviderSettingsPage: React.FC = () => {
                 path={user?.uid || "defaultUserId"}
                 onSaveImages={(images) => {
                   saveProviderImagesToFirestore(images);
+                  updateProviderProperty("generalSettings.images", images);
                 }}
                 defaultImages={providerData?.generalSettings?.images || []}
               />
@@ -458,7 +462,11 @@ const ProviderSettingsPage: React.FC = () => {
                       Calendarul de programări este disponibil doar pentru
                       utilizatorii cu planul Pro.
                     </p>
-                    <Button variant="default" size="sm">
+                    <Button
+                      variant="default"
+                      size="sm"
+                      onClick={() => router.push("/dashboard/upgrade-plan")}
+                    >
                       Upgrade la Pro
                     </Button>
                   </div>
@@ -517,7 +525,12 @@ const ProviderSettingsPage: React.FC = () => {
                 Secțiunea FAQ este disponibilă doar pentru utilizatorii cu
                 planul Pro.
               </p>
-              <Button variant="default">Upgrade la Pro</Button>
+              <Button
+                variant="default"
+                onClick={() => router.push("/dashboard/upgrade-plan")}
+              >
+                Upgrade la Pro
+              </Button>
             </div>
           </div>
         )}

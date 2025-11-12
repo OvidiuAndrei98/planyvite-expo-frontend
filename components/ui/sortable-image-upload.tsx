@@ -24,7 +24,6 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
-import { set } from "zod";
 
 interface ImageFile {
   id: string;
@@ -254,6 +253,9 @@ export default function SortableImageUpload({
   };
   const removeImage = useCallback(
     (id: string) => {
+      // Find the image in allImages to check if it's an uploaded image
+      const imageToRemove = allImages.find((img) => img.id === id);
+
       // Remove from allImages
       setAllImages((prev) => prev.filter((img) => img.id !== id));
 
@@ -265,26 +267,27 @@ export default function SortableImageUpload({
           URL.revokeObjectURL(uploadedImage.preview);
         }
 
-        // Delete from Firebase Storage if upload was completed
-        if (
-          uploadedImage.status === "completed" &&
-          !uploadedImage.preview.startsWith("blob:")
-        ) {
-          try {
-            const storage = getStorage();
-            const imageRef = ref(storage, uploadedImage.preview);
-            deleteObject(imageRef).catch((error) => {
-              console.error("Error deleting image from Firebase:", error);
-            });
-          } catch (error) {
-            console.error(
-              "Error creating Firebase reference for deletion:",
-              error
-            );
-          }
-        }
-
         setImages((prev) => prev.filter((img) => img.id !== id));
+      }
+
+      // Delete from Firebase Storage if it's an uploaded image (type === "uploaded")
+      if (
+        imageToRemove?.type === "uploaded" &&
+        imageToRemove.src &&
+        !imageToRemove.src.startsWith("blob:")
+      ) {
+        try {
+          const storage = getStorage();
+          const imageRef = ref(storage, imageToRemove.src);
+          deleteObject(imageRef).catch((error) => {
+            console.error("Error deleting image from Firebase:", error);
+          });
+        } catch (error) {
+          console.error(
+            "Error creating Firebase reference for deletion:",
+            error
+          );
+        }
       }
     },
     [images, allImages]
