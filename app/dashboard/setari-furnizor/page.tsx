@@ -40,6 +40,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 const ProviderSettingsPage: React.FC = () => {
+  const [initialRender, setInitialRender] = useState<boolean>(true);
   const user = useAuth().userDetails;
   const [isValidProvider, setIsValidProvider] = useState<boolean>(false);
   const [providerData, setProviderData] = useState<Provider | null>(null);
@@ -84,6 +85,7 @@ const ProviderSettingsPage: React.FC = () => {
 
       current[keys[keys.length - 1]] = value;
       setProviderData(newData);
+      setInitialRender(false);
     } else {
       setProviderData({ ...providerData, [property]: value });
     }
@@ -125,6 +127,7 @@ const ProviderSettingsPage: React.FC = () => {
   }, [providerData, isValidProvider]);
 
   useEffect(() => {
+    setInitialRender(true);
     queryProviderById(user?.uid || "");
   }, []);
 
@@ -163,7 +166,19 @@ const ProviderSettingsPage: React.FC = () => {
   };
 
   const saveProviderImagesToFirestore = async (images: SortableImage[]) => {
-    if (!user || images.length === 0) return;
+    if (!user || images.length === 0 || initialRender) return;
+
+    // Check if there are actual changes by comparing with existing images
+    const existingImages = providerData?.generalSettings?.images || [];
+    const hasChanges =
+      images.length !== existingImages.length ||
+      images.some(
+        (img, index) =>
+          !existingImages[index] || img.id !== existingImages[index].id
+      );
+
+    if (!hasChanges) return;
+
     try {
       await saveImagesToFirestore(images, user.uid);
       toast.success("Imaginile au fost salvate cu succes.");
