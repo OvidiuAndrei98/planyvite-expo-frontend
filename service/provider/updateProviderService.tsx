@@ -1,4 +1,4 @@
-import { Provider, User } from "@/core/types";
+import { Provider } from "@/core/types";
 import db from "@/lib/firebase/fireStore";
 import { doc, setDoc } from "firebase/firestore";
 

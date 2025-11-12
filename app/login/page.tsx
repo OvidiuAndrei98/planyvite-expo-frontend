@@ -66,7 +66,7 @@ export const LoginPage = () => {
                 <div className="flex flex-col items-center text-center">
                   <h1 className="text-2xl font-bold">Bine ai venit</h1>
                   <p className="text-slate-500 text-balance dark:text-slate-400">
-                    Conectează-te pentru a continua
+                    Conectează-te ca furnizor pentru a continua
                   </p>
                 </div>
                 <div className="grid gap-3">

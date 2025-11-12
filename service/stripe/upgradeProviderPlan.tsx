@@ -1,7 +1,10 @@
 import db from "@/lib/firebase/fireStore";
 import { addDoc, collection, onSnapshot } from "firebase/firestore";
 
-export const planUpgradeCheckout = async (userId: string) => {
+export const planUpgradeCheckout = async (
+  userId: string,
+  isAnnual: boolean
+) => {
   // Reference to the user's checkout_sessions subcollection
   const checkoutSessionsRef = collection(
     db,
@@ -9,11 +12,12 @@ export const planUpgradeCheckout = async (userId: string) => {
     userId,
     "checkout_sessions"
   );
-
   // Add a new checkout session document
   const docRef = await addDoc(checkoutSessionsRef, {
     mode: "subscription",
-    price: "price_1SSJuCIxI3w7eVcKTp5OHp1L", // One-time price created in Stripe
+    price: isAnnual
+      ? "price_1SScNeIxI3w7eVcKmu2UFIQh"
+      : "price_1SSJuCIxI3w7eVcKTp5OHp1L", // One-time price created in Stripe
     success_url: window.location.origin,
     cancel_url: window.location.origin,
     customer_update: {

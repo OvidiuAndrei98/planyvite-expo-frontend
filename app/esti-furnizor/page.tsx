@@ -1,0 +1,368 @@
+"use client";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  BarChart3,
+  CheckCircle,
+  Crown,
+  DollarSign,
+  Headphones,
+  Star,
+  Users,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
+const BecomeProviderPage = () => {
+  const [isAnnual, setIsAnnual] = useState(false);
+  const router = useRouter();
+
+  const proFeatures = [
+    "Tot ce include planul gratuit",
+    "Locatii multiple",
+    "Vizibilitate prioritara in lista de furnizori",
+    "Badge Pro pe profil",
+    "Calendar de rezervari integrat",
+    "5 poze pentru furnizor",
+    "Connfigurare sectiune FAQ",
+  ];
+
+  return (
+    <div className="relative bg-gradient-to-br from-purple-50 to-pink-50 pt-12">
+      <div className=" relative max-w-4xl mx-auto min-h-screen">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            Devino Furnizor pe Planyvite Expo
+          </h1>
+          <p className="text-xl text-gray-600">
+            Promovează-ți serviciile acolo unde mirii te caută!
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-8 mb-12">
+          <div className="bg-white rounded-lg p-6 shadow-lg z-2">
+            <h3 className="text-xl font-semibold text-gray-900 mb-3">
+              Acces la sute de miri potențiali
+            </h3>
+            <p className="text-gray-600">
+              Fii acolo unde clienții caută servicii.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-lg p-6 shadow-lg">
+            <h3 className="text-xl font-semibold text-gray-900 mb-3">
+              Profil dedicat brandului tău
+            </h3>
+            <p className="text-gray-600">
+              Afișează descrierea completă, fotografii, oferte și date de
+              contact pentru a atrage atenția mirilor.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-lg p-6 shadow-lg">
+            <h3 className="text-xl font-semibold text-gray-900 mb-3">
+              Poziționare premium
+            </h3>
+            <p className="text-gray-600">
+              Poți apărea în topul rezultatelor pentru mai multă vizibilitate în
+              fața clienților potriviți.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-lg p-6 shadow-lg z-2">
+            <h3 className="text-xl font-semibold text-gray-900 mb-3">
+              Potrivit pentru orice furnizor
+            </h3>
+            <p className="text-gray-600">
+              Fotografi, videografi, formații, DJ, florari, organizatori,
+              rochii, locații și alți profesioniști sunt bineveniți.
+            </p>
+          </div>
+        </div>
+
+        <div className="text-center">
+          <Button
+            className="bg-purple-600 hover:bg-purple-700 text-white py-6 px-8 text-lg font-semibold"
+            onClick={() => router.push("/login")}
+          >
+            Devino Furnizor Acum
+          </Button>
+        </div>
+      </div>
+      <div className="how-it-works-section relative bg-white py-6">
+        <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-pink-50/80 to-transparent pointer-events-none" />
+        <div className="max-w-4xl mx-auto mt-16">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Cum funcționează?
+            </h2>
+            <p className="text-lg text-gray-600">
+              Este foarte simplu să devii furnizor pe Planyvite Expo
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="bg-purple-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-purple-600">1</span>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                Îți faci cont
+              </h3>
+              <p className="text-gray-600">
+                Creează-ți contul gratuit în câteva minute
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="bg-purple-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-purple-600">2</span>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                Completezi profilul
+              </h3>
+              <p className="text-gray-600">
+                Adaugă informații despre serviciile tale și fotografii
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="bg-purple-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-purple-600">3</span>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                Apari în listă
+              </h3>
+              <p className="text-gray-600">
+                Vei apărea în lista de furnizori și mirii te vor putea găsi
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div className="benefits-section relative bg-gray-50 py-16">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                Beneficiile de a fi furnizor pe Planyvite Expo
+              </h2>
+              <p className="text-lg text-gray-600">
+                Descoperă avantajele platformei noastre
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="bg-white rounded-lg p-6 shadow-lg border-l-4 border-primary">
+                <div className="text-primary mb-3">
+                  <CheckCircle className="w-8 h-8" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  Vizibilitate crescută
+                </h3>
+                <p className="text-gray-600">
+                  Apari în fața a sute de miri care caută serviciile tale zilnic
+                </p>
+              </div>
+
+              <div className="bg-white rounded-lg p-6 shadow-lg border-l-4 border-primary">
+                <div className="text-primary mb-3">
+                  <Users className="w-8 h-8" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  Clienți calificați
+                </h3>
+                <p className="text-gray-600">
+                  Conectează-te doar cu miri care sunt cu adevărat interesați de
+                  serviciile tale
+                </p>
+              </div>
+
+              <div className="bg-white rounded-lg p-6 shadow-lg border-l-4 border-primary">
+                <div className="text-primary mb-3">
+                  <Star className="w-8 h-8" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  Recenzii și rating
+                </h3>
+                <p className="text-gray-600">
+                  Construiește-ți reputația prin recenziile clienților mulțumiți
+                </p>
+              </div>
+
+              <div className="bg-white rounded-lg p-6 shadow-lg border-l-4 border-primary">
+                <div className="text-primary mb-3">
+                  <BarChart3 className="w-8 h-8" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  Gestionare simplă
+                </h3>
+                <p className="text-gray-600">
+                  Administrează-ți profilul și rezervările dintr-un singur loc
+                </p>
+              </div>
+
+              <div className="bg-white rounded-lg p-6 shadow-lg border-l-4 border-primary">
+                <div className="text-primary mb-3">
+                  <DollarSign className="w-8 h-8" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  Creștere venituri
+                </h3>
+                <p className="text-gray-600">
+                  Mărește-ți numărul de contracte și veniturile prin expunere
+                  constantă
+                </p>
+              </div>
+
+              <div className="bg-white rounded-lg p-6 shadow-lg border-l-4 border-primary">
+                <div className="text-primary mb-3">
+                  <Headphones className="w-8 h-8" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  Suport dedicat
+                </h3>
+                <p className="text-gray-600">
+                  Beneficiezi de asistență tehnică și suport pentru optimizarea
+                  profilului
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div className="pricing-section relative bg-white py-16 px-6">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                Alege planul potrivit pentru tine
+              </h2>
+              <p className="text-lg text-gray-600">
+                Deblocați toate funcționalitățile disponibile pe platforma
+                noastră de furnizori
+              </p>
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-8">
+              {/* Current Plan */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Star className="h-5 w-5" />
+                    Plan Gratuit
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold mb-4">GRATUIT</div>
+                  <ul className="space-y-2">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-green-500" />
+                      Acces pe platforma
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-green-500" />
+                      Vizibiliate in lista de furnizori
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-green-500" />
+                      Configurare pachete
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-green-500" />O poza
+                      pentru furnizor
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-green-500" />O
+                      singura locatie
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-green-500" />
+                      Configurare Informații de contact
+                    </li>
+                  </ul>
+                </CardContent>
+              </Card>
+              {/* Pro Plan */}
+              <Card className="border-primary relative">
+                <Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2">
+                  Popular
+                </Badge>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Crown className="h-5 w-5 text-yellow-500" />
+                    Plan Pro
+                  </CardTitle>
+                  <CardDescription>
+                    Tot ce ai nevoie pentru a crește vizibilitatea
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="mb-4">
+                    <div className="flex items-center justify-start gap-4 mb-4">
+                      <span
+                        className={`text-sm ${
+                          !isAnnual ? "font-semibold" : "text-gray-500"
+                        }`}
+                      >
+                        Lunar
+                      </span>
+                      <button
+                        onClick={() => setIsAnnual(!isAnnual)}
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                          isAnnual ? "bg-purple-600" : "bg-gray-200"
+                        }`}
+                      >
+                        <span
+                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                            isAnnual ? "translate-x-6" : "translate-x-1"
+                          }`}
+                        />
+                      </button>
+                      <span
+                        className={`text-sm ${
+                          isAnnual ? "font-semibold" : "text-gray-500"
+                        }`}
+                      >
+                        Anual
+                        {isAnnual && (
+                          <span className="ml-1 text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                            -17%
+                          </span>
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="text-2xl font-bold">
+                    RON {isAnnual ? "200" : "20"}/{isAnnual ? "an" : "luna"}
+                    <span className="text-sm font-normal text-muted-foreground ml-2">
+                      facturat {isAnnual ? "anual" : "lunar"}
+                    </span>
+                  </div>
+                  <ul className="space-y-2">
+                    {proFeatures.map((feature, index) => (
+                      <li key={index} className="flex items-center gap-2">
+                        <CheckCircle className="h-4 w-4 text-green-500" />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default BecomeProviderPage;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { act, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -15,14 +15,37 @@ import { CheckCircle, Star, Crown } from "lucide-react";
 import { useAuth } from "@/core/context/authContext";
 import { planUpgradeCheckout } from "@/service/stripe/upgradeProviderPlan";
 import { manageSubscription } from "@/service/stripe/manageSubscription";
+import { getDetailedSubscriptionStatus } from "@/service/core/statusResolverService";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function UpgradePlanPage() {
   const [isLoading, setIsLoading] = useState(false);
   const user = useAuth().userDetails;
+  const [isAnnual, setIsAnnual] = useState(false);
+  const [activeSubscription, setActiveSubscription] = useState<boolean>(false);
+  const [pageLoading, setPageLoading] = useState(true);
+
+  useEffect(() => {
+    const activeSubscription = async () => {
+      if (user) {
+        const status = await getDetailedSubscriptionStatus(user.uid);
+        switch (status) {
+          case "active":
+            setActiveSubscription(true);
+            break;
+          default:
+            setActiveSubscription(false);
+            break;
+        }
+        setPageLoading(false);
+      }
+    };
+    activeSubscription();
+  }, [user]);
 
   const handleUpgrade = async () => {
     setIsLoading(true);
-    await planUpgradeCheckout(user?.uid!);
+    await planUpgradeCheckout(user?.uid!, isAnnual);
     setIsLoading(false);
   };
 
@@ -36,7 +59,11 @@ export default function UpgradePlanPage() {
     "Connfigurare sectiune FAQ",
   ];
 
-  return (
+  return pageLoading ? (
+    <div className="flex items-center justify-center h-screen">
+      <Spinner color="#7b34f9" />
+    </div>
+  ) : (
     <div className="flex flex-col w-full h-full bg-background p-[var(--padding-sm)] overflow-auto">
       <div className="max-w-[1024px] mx-auto w-full">
         <div className="text-center mb-8">
@@ -55,10 +82,14 @@ export default function UpgradePlanPage() {
                 <Star className="h-5 w-5" />
                 Plan Gratuit
               </CardTitle>
-              <CardDescription>Planul tau curent</CardDescription>
+              {!activeSubscription ? (
+                <CardDescription>Planul tau curent</CardDescription>
+              ) : (
+                <CardDescription>Functionalitati de baza</CardDescription>
+              )}
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold mb-4">RON 0/luna</div>
+              <div className="text-2xl font-bold mb-4">GRATUIT</div>
               <ul className="space-y-2">
                 <li className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-green-500" />
@@ -103,10 +134,45 @@ export default function UpgradePlanPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
+              <div className="mb-4">
+                <div className="flex items-center justify-start gap-4 mb-4">
+                  <span
+                    className={`text-sm ${
+                      !isAnnual ? "font-semibold" : "text-gray-500"
+                    }`}
+                  >
+                    Lunar
+                  </span>
+                  <button
+                    onClick={() => setIsAnnual(!isAnnual)}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      isAnnual ? "bg-purple-600" : "bg-gray-200"
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        isAnnual ? "translate-x-6" : "translate-x-1"
+                      }`}
+                    />
+                  </button>
+                  <span
+                    className={`text-sm ${
+                      isAnnual ? "font-semibold" : "text-gray-500"
+                    }`}
+                  >
+                    Anual
+                    {isAnnual && (
+                      <span className="ml-1 text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                        -17%
+                      </span>
+                    )}
+                  </span>
+                </div>
+              </div>
               <div className="text-2xl font-bold mb-4">
-                RON 20/luna
+                RON {isAnnual ? "200" : "20"}/{isAnnual ? "an" : "luna"}
                 <span className="text-sm font-normal text-muted-foreground ml-2">
-                  facturat lunar (Minim 12 luni)
+                  facturat {isAnnual ? "anual" : "lunar"}
                 </span>
               </div>
               <ul className="space-y-2">
@@ -119,19 +185,25 @@ export default function UpgradePlanPage() {
               </ul>
             </CardContent>
             <CardFooter>
-              <Button
-                className="w-full"
-                onClick={handleUpgrade}
-                disabled={isLoading}
-              >
-                {isLoading ? "Procesare..." : "Cumpara plan"}
-              </Button>
+              {activeSubscription ? (
+                <Button
+                  className="w-full"
+                  onClick={() => user && manageSubscription(user?.uid)}
+                >
+                  Gestioneaza
+                </Button>
+              ) : (
+                <Button
+                  disabled={isLoading}
+                  className="w-full"
+                  onClick={handleUpgrade}
+                >
+                  {isLoading ? "Procesare..." : "Cumpara plan"}
+                </Button>
+              )}
             </CardFooter>
           </Card>
         </div>
-        <Button onClick={() => user && manageSubscription(user?.uid)}>
-          Manage
-        </Button>
       </div>
     </div>
   );

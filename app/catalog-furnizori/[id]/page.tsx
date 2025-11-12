@@ -34,6 +34,7 @@ import {
 import { queryProviderByIdService } from "@/service/provider/queryProviderById";
 import { Provider } from "@/core/types";
 import { Spinner } from "@/components/ui/spinner";
+import { EVENT_VENDOR_CATEGORIES } from "@/core/constants";
 
 const Page = () => {
   const [providerLoading, setProviderLoading] = useState(true);
@@ -123,7 +124,9 @@ const Page = () => {
           )}
         </div>
         <p className="text-muted-foreground mt-2">
-          {provider.generalSettings.category}
+          {EVENT_VENDOR_CATEGORIES.find(
+            (cat) => cat.value === provider.generalSettings.category
+          )?.label || "Categorie nedefinită"}
         </p>
       </div>
 
@@ -135,20 +138,34 @@ const Page = () => {
             <Carousel>
               <CarouselContent>
                 {provider.generalSettings.images &&
-                provider.generalSettings.images.length > 0 ? (
-                  provider.generalSettings.images.map((image, index) => (
-                    <CarouselItem key={index}>
+                provider.providerPlan === "pro" ? (
+                  provider.generalSettings.images.length > 0 ? (
+                    provider.generalSettings.images.map((image, index) => (
+                      <CarouselItem key={index}>
+                        <Image
+                          src={image.src}
+                          width={1024}
+                          height={1024}
+                          alt={`${provider.generalSettings.displayName} image ${
+                            index + 1
+                          }`}
+                          className="w-full h-100 rounded-md object-cover"
+                        />
+                      </CarouselItem>
+                    ))
+                  ) : (
+                    <CarouselItem>
                       <Image
-                        src={image.src}
+                        src={provider.generalSettings.images[0].src}
                         width={1024}
                         height={1024}
-                        alt={`${provider.generalSettings.displayName} image ${
-                          index + 1
-                        }`}
+                        alt={`${
+                          provider.generalSettings.displayName
+                        } image ${1}`}
                         className="w-full h-100 rounded-md object-cover"
                       />
                     </CarouselItem>
-                  ))
+                  )
                 ) : (
                   <CarouselItem>
                     <Image
@@ -306,60 +323,6 @@ const Page = () => {
           </div>
         </div>
       </div>
-
-      <footer className="bg-primary/30 p-4 rounded-xl text-center">
-        <h3 className="text-2xl font-semibold mb-4">Planyvite Expo</h3>
-        <div className="flex flex-col items-center gap-4">
-          <div>
-            <h4 className="text-lg font-semibold mb-2">Descoperă mai mult</h4>
-            <p className="text-base mb-2">
-              Explorează catalogul nostru extins de furnizori și găsește tot ce
-              ai nevoie pentru evenimentul tău.
-            </p>
-            <Link
-              href="/catalog-furnizori"
-              className="text-primary font-medium underline"
-            >
-              Vezi toți furnizorii
-            </Link>
-          </div>
-          <div className="w-full h-px bg-gray-300 my-4"></div>
-          <div className="flex flex-row gap-4 justify-center">
-            <Link
-              href="https://facebook.com/planyvite"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2 bg-primary/10 rounded-full hover:bg-primary/20 transition-colors"
-            >
-              <Facebook className="size-5" />
-            </Link>
-            <Link
-              href="https://instagram.com/planyvite"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2 bg-primary/10 rounded-full hover:bg-primary/20 transition-colors"
-            >
-              <Instagram className="size-5" />
-            </Link>
-            <Link
-              href="https://twitter.com/planyvite"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2 bg-primary/10 rounded-full hover:bg-primary/20 transition-colors"
-            >
-              <Twitter className="size-5" />
-            </Link>
-            <Link
-              href="https://linkedin.com/company/planyvite"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2 bg-primary/10 rounded-full hover:bg-primary/20 transition-colors"
-            >
-              <Linkedin className="size-5" />
-            </Link>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };

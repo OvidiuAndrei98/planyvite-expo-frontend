@@ -1,6 +1,5 @@
 "use client";
 
-import MarkdownViewer from "@/components/markdown-viewer/MarkdownViewe";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -16,20 +15,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
 import { Spinner } from "@/components/ui/spinner";
+import { EVENT_VENDOR_CATEGORIES, ROMANIA_LOCATIONS } from "@/core/constants";
 import { Provider } from "@/core/types";
+import { useIsMobile } from "@/hooks/isMobile";
 import { queryProvidersService } from "@/service/provider/queryProviders";
 import { FilterIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function Catalog() {
-  const [priceRange, setPriceRange] = useState([0, 20000]);
+  // const [priceRange, setPriceRange] = useState([0, 20000]);
   const [location, setLocation] = useState("");
   const [category, setCategory] = useState("");
   const [providers, setProviders] = useState<Provider[]>([]);
   const [providersLoading, setProvidersLoading] = useState(false);
+  const isMobile = useIsMobile();
 
   const queryProviders = async () => {
     // TODO: Implement API call to fetch providers based on filters
@@ -44,16 +45,14 @@ export default function Catalog() {
     queryProviders();
   }, []);
 
-  const hasActiveFilters =
-    location !== "" ||
-    category !== "" ||
-    priceRange[0] !== 0 ||
-    priceRange[1] !== 20000;
+  const hasActiveFilters = location !== "" || category !== "";
+  // priceRange[0] !== 0 ||
+  // priceRange[1] !== 20000;
 
   const resetFilters = () => {
     setLocation("");
     setCategory("");
-    setPriceRange([0, 20000]);
+    // setPriceRange([0, 20000]);
   };
 
   useEffect(() => {
@@ -78,14 +77,14 @@ export default function Catalog() {
     // };
     //
     // fetchProviders();
-  }, [priceRange, location, category]);
+  }, [location, category]);
 
   return providersLoading ? (
     <div className="w-full h-screen flex items-center justify-center bg-background">
       <Spinner color="#7b34f9" className="size-8" />
     </div>
   ) : (
-    <div className="grid grid-cols-1 max-w-[1024px] mx-auto px-[var(--padding-md)] py-[var(--padding-lg)] justify-center">
+    <div className="min-h-screen grid grid-cols-1 grid-rows-[auto_1fr] max-w-[1024px] mx-auto px-[var(--padding-md)] py-[var(--padding-lg)] justify-center items-start overflow-auto">
       <div className="header-section w-full flex flex-col gap-2 mb-8">
         <h3 className="text-center text-2xl font-semibold">
           Catalog Furnizori
@@ -97,47 +96,52 @@ export default function Catalog() {
       <div className="content-section w-full">
         <div className="filters-section w-full mb-6">
           <div className="flex flex-wrap gap-4 items-center justify-between mb-4">
-            <Drawer>
-              <DrawerTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className={
-                    hasActiveFilters ? "text-primary bg-primary/10" : ""
-                  }
-                >
-                  <FilterIcon />
-                </Button>
-              </DrawerTrigger>
-              <DrawerContent>
-                <DrawerTitle></DrawerTitle>
-                <div className="mx-auto w-full max-w-sm p-[var(--padding-md)] flex flex-col gap-6">
-                  <div className="city-filter flex w-full max-w-md flex-col gap-3">
-                    <Label>Locație</Label>
-                    <Select onValueChange={setLocation} value={location}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Locație.." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="light">Light</SelectItem>
-                        <SelectItem value="dark">Dark</SelectItem>
-                        <SelectItem value="system">System</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="city-filter flex w-full max-w-md flex-col gap-3">
-                    <Label>Categorie</Label>
-                    <Select onValueChange={setCategory} value={category}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Categorie.." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="light">Light</SelectItem>
-                        <SelectItem value="dark">Dark</SelectItem>
-                        <SelectItem value="system">System</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="price-range flex w-full max-w-md flex-col gap-3">
+            {isMobile ? (
+              <Drawer>
+                <DrawerTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className={
+                      hasActiveFilters ? "text-primary bg-primary/10" : ""
+                    }
+                  >
+                    <FilterIcon />
+                  </Button>
+                </DrawerTrigger>
+                <DrawerContent>
+                  <DrawerTitle></DrawerTitle>
+                  <div className="mx-auto w-full max-w-sm p-[var(--padding-md)] flex flex-col gap-6">
+                    <div className="city-filter flex w-full max-w-md flex-col gap-3">
+                      <Label>Locație</Label>
+                      <Select onValueChange={setLocation} value={location}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Locație.." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {ROMANIA_LOCATIONS.map((loc) => (
+                            <SelectItem key={loc.value} value={loc.value}>
+                              {loc.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="city-filter flex w-full max-w-md flex-col gap-3">
+                      <Label>Categorie</Label>
+                      <Select onValueChange={setCategory} value={category}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Categorie.." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {EVENT_VENDOR_CATEGORIES.map((cat) => (
+                            <SelectItem key={cat.value} value={cat.value}>
+                              {cat.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    {/* <div className="price-range flex w-full max-w-md flex-col gap-3">
                     <Label htmlFor="slider">Preț</Label>
                     <Slider
                       id="slider"
@@ -150,10 +154,43 @@ export default function Catalog() {
                       <span>Lei {priceRange[0]}</span>
                       <span>Lei {priceRange[1]}</span>
                     </div>
+                  </div> */}
                   </div>
+                </DrawerContent>
+              </Drawer>
+            ) : (
+              <div className="flex flex-row gap-4 min-w-[300px]">
+                <div className="city-filter flex w-full max-w-md flex-col gap-3">
+                  <Select onValueChange={setLocation} value={location}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Locație.." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {ROMANIA_LOCATIONS.map((loc) => (
+                        <SelectItem key={loc.value} value={loc.value}>
+                          {loc.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
-              </DrawerContent>
-            </Drawer>
+                <div className="city-filter flex w-full max-w-md flex-col gap-3">
+                  <Select onValueChange={setCategory} value={category}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Categorie.." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {EVENT_VENDOR_CATEGORIES.map((cat) => (
+                        <SelectItem key={cat.value} value={cat.value}>
+                          {cat.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            )}
+
             <Button
               variant="link"
               className="text-sm text-muted-foreground hover:text-foreground cursor-pointer"
@@ -174,6 +211,20 @@ export default function Catalog() {
               return 0;
             })
             .filter((provider) => provider.isValidProvider)
+            .filter((provider) => {
+              // Apply location filter
+              if (
+                location &&
+                !provider.generalSettings.locations.includes(location)
+              ) {
+                return false;
+              }
+              // Apply category filter
+              if (category && provider.generalSettings.category !== category) {
+                return false;
+              }
+              return true;
+            })
             .map((provider) => (
               <div
                 key={provider.uid}

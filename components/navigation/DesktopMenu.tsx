@@ -23,16 +23,22 @@ const DesktopMenu = () => {
       </div>
       <ul className="homepage-nav-menu">
         <li className="nav-item">
-          <Link href="#first-section">Acasă</Link>
+          <Link href="/">Acasă</Link>
         </li>
         <li className="nav-item">
           <Link href="/catalog-furnizori">Catalog Furnizori</Link>
         </li>
         <li className="nav-item">
-          <Link href="#features-section">Ești furnizor?</Link>
+          <Link href="/esti-furnizor">Ești furnizor?</Link>
         </li>
         <li className="nav-item">
-          <Link href="#planner-section">Cum funcționează</Link>
+          <Link
+            href="https://planyvite.ro"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Invitatii Digitale
+          </Link>
         </li>
       </ul>
       <Button
