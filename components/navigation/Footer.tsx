@@ -1,6 +1,7 @@
 import { Facebook, InstagramIcon, Linkedin, Twitter } from "lucide-react";
 import Image from "next/image";
 import PlanyviteLogo from "@/public/planyvite_logo.svg";
+import Link from "next/link";
 
 export function Footer() {
   return (
@@ -65,13 +66,15 @@ export function Footer() {
               Legal
             </li>
             <li className="text-[#797687] hover:text-[var(--primary-color)] transition-colors cursor-pointer">
-              Termeni și condiții
+              <Link href="/termeni-si-conditii">Termeni și condiții</Link>
             </li>
             <li className="text-[#797687] hover:text-[var(--primary-color)] transition-colors cursor-pointer">
-              Politica de confidențialitate
+              <Link href="/confidentialitate">
+                Politica de confidențialitate
+              </Link>
             </li>
             <li className="text-[#797687] hover:text-[var(--primary-color)] transition-colors cursor-pointer">
-              Politica de cookies
+              <Link href="/cookies">Politica de cookies</Link>
             </li>
           </ul>
         </div>

@@ -6,7 +6,7 @@ export async function manageSubscription(userId: string) {
     return;
   }
 
-  const functions = getFunctions();
+  const functions = getFunctions(undefined, "europe-central2");
   const callableFunction = httpsCallable(
     functions,
     "ext-firestore-stripe-payments-createPortalLink"
@@ -14,7 +14,7 @@ export async function manageSubscription(userId: string) {
 
   try {
     const result = await callableFunction({
-      returnUrl: window.location.origin + "/account",
+      returnUrl: window.location.origin + "/dashboard/setari-furnizor",
     });
 
     const portalUrl = (result.data as { url: string }).url;

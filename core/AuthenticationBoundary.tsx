@@ -24,6 +24,7 @@ import {
 import LoginPage from "@/app/login/page";
 import { Spinner } from "@/components/ui/spinner";
 import { getDetailedSubscriptionStatus } from "@/service/core/statusResolverService";
+import { toast } from "sonner";
 
 /**
  * A component that manages user authentication state and protects routes.
@@ -71,9 +72,9 @@ export function AuthenticationBoundary({ children }: { children?: ReactNode }) {
         setUserDetails(appUser);
         setAuthenticationState(AuthenticationState.Authenticated);
 
-        if (currentPath === "/login" || currentPath === "/register") {
+        if (currentPath === "/login" || currentPath === "/inregistrare") {
           // Redirecționează utilizatorul logat
-          router.push("/dashboard");
+          router.push("/dashboard/setari-furnizor");
         }
       } else {
         setFirebaseUser(null);
@@ -126,7 +127,7 @@ export function AuthenticationBoundary({ children }: { children?: ReactNode }) {
         };
         await addUser(newUser);
       }
-      window.location.href = "/dashboard";
+      window.location.href = "/dashboard/setari-furnizor";
       // `onAuthStateChanged` will handle state updates and redirects
     } catch (error: unknown) {
       console.error("Google login/linking error:", error);
@@ -140,15 +141,15 @@ export function AuthenticationBoundary({ children }: { children?: ReactNode }) {
         if (
           (error as { code: string }).code === "auth/credential-already-in-use"
         ) {
-          //   toast.error("This Google account is already linked to another user.");
+          toast.error("This Google account is already linked to another user.");
         } else {
-          //   toast.error(
-          //     (error as { message?: string }).message ||
-          //       "An error occurred during Google sign-in."
-          //   );
+          toast.error(
+            (error as { message?: string }).message ||
+              "An error occurred during Google sign-in."
+          );
         }
       } else {
-        // toast.error("An error occurred during Google sign-in.");
+        toast.error("An error occurred during Google sign-in.");
       }
     } finally {
       setIsProcessingLogin(false);
@@ -184,7 +185,7 @@ export function AuthenticationBoundary({ children }: { children?: ReactNode }) {
         };
         await addUser(newUser);
       }
-      window.location.href = "/dashboard";
+      window.location.href = "/dashboard/setari-furnizor";
       // The onAuthStateChanged listener will automatically handle the redirect
       // and update the state to Authenticated.
     } catch (error: unknown) {
@@ -197,15 +198,15 @@ export function AuthenticationBoundary({ children }: { children?: ReactNode }) {
       ) {
         const code = (error as { code: string }).code;
         if (code === "auth/credential-already-in-use") {
-          //   toast.error("Acest email este deja asociat cu un alt cont.");
+          toast.error("Acest email este deja asociat cu un alt cont.");
         } else if (code === "auth/invalid-email") {
-          //   toast.error("Nu există niciun cont cu acest email.");
+          toast.error("Nu există niciun cont cu acest email.");
         } else if (code === "auth/wrong-password") {
-          //   toast.error("Parolă incorectă. Vă rugăm să încercați din nou.");
+          toast.error("Parolă incorectă. Vă rugăm să încercați din nou.");
         } else if (code === "auth/invalid-credential") {
-          //   toast.error(
-          //     "Credentiale invalide. Vă rugăm să verificați datele introduse."
-          //   );
+          toast.error(
+            "Credentiale invalide. Vă rugăm să verificați datele introduse."
+          );
         }
       }
     } finally {
@@ -219,7 +220,7 @@ export function AuthenticationBoundary({ children }: { children?: ReactNode }) {
       router.push("/login");
     } catch (error) {
       console.error("Error signing out:", error);
-      //   toast.error("Logout failed. Please try again.");
+      toast.error("Logout failed. Please try again.");
     }
   };
 
@@ -252,7 +253,7 @@ export function AuthenticationBoundary({ children }: { children?: ReactNode }) {
         // Dacă ești autentificat și pe /login sau /register, nu arăta children (login form), doar loader și lasă useEffect-ul să redirecționeze
         if (
           authenticationState === AuthenticationState.Authenticated &&
-          (pathname === "/login" || pathname === "/register")
+          (pathname === "/login" || pathname === "/inregistrare")
         ) {
           return (
             <div className="w-full h-screen flex items-center justify-center">
@@ -268,6 +269,10 @@ export function AuthenticationBoundary({ children }: { children?: ReactNode }) {
 
         // Utilizator neautentificat, redirecționează dacă nu e pagină anonimă
         if (authenticationState === AuthenticationState.Unauthenticated) {
+          // Allow access to register page without authentication
+          if (pathname === "/inregistrare") {
+            return <>{children}</>;
+          }
           //   router.push("/login");
           return <LoginPage />;
         }

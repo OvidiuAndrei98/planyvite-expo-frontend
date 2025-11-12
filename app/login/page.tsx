@@ -139,7 +139,10 @@ export const LoginPage = () => {
                 </div>
                 <div className="text-center text-sm">
                   Nu ai cont?{" "}
-                  <a href="/register" className="underline underline-offset-4">
+                  <a
+                    href="/inregistrare"
+                    className="underline underline-offset-4"
+                  >
                     Înregistrează-te
                   </a>
                 </div>

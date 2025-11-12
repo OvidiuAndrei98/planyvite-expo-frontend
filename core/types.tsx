@@ -24,6 +24,7 @@ export interface Provider {
     name: string;
     price: number;
     currency: string;
+    isActive: boolean;
   }[];
   contactSettings: {
     phone: string;

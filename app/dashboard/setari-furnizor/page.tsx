@@ -37,12 +37,14 @@ import Link from "next/link";
 import { Textarea } from "@/components/ui/textarea";
 import { Spinner } from "@/components/ui/spinner";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const ProviderSettingsPage: React.FC = () => {
   const user = useAuth().userDetails;
   const [isValidProvider, setIsValidProvider] = useState<boolean>(false);
   const [providerData, setProviderData] = useState<Provider | null>(null);
   const [providerLoading, setProviderLoading] = useState<boolean>(true);
+  const [canSave, setCanSave] = useState<boolean>(false);
   const [saving, setSaving] = useState<boolean>(false);
   const router = useRouter();
 
@@ -119,19 +121,55 @@ const ProviderSettingsPage: React.FC = () => {
     };
 
     validateProvider();
-  }, [providerData]);
+    setCanSave(checkPackagesToBeValid() && checkFAQsToBeValid());
+  }, [providerData, isValidProvider]);
 
   useEffect(() => {
     queryProviderById(user?.uid || "");
   }, []);
 
+  const checkPackagesToBeValid = (): boolean => {
+    if (providerData?.packages && providerData.packages.length > 0) {
+      for (const pkg of providerData.packages) {
+        if (
+          !pkg.name ||
+          pkg.name.trim() === "" ||
+          !pkg.description ||
+          pkg.description.trim() === ""
+        ) {
+          return false;
+        }
+      }
+      return true;
+    }
+    return true;
+  };
+
+  const checkFAQsToBeValid = (): boolean => {
+    if (providerData?.faqs && providerData.faqs.length > 0) {
+      for (const faq of providerData.faqs) {
+        if (
+          !faq.question ||
+          faq.question.trim() === "" ||
+          !faq.answer ||
+          faq.answer.trim() === ""
+        ) {
+          return false;
+        }
+      }
+      return true;
+    }
+    return true;
+  };
+
   const saveProviderImagesToFirestore = async (images: SortableImage[]) => {
-    if (!user) return;
+    if (!user || images.length === 0) return;
     try {
       await saveImagesToFirestore(images, user.uid);
-      console.log("Images saved successfully");
+      toast.success("Imaginile au fost salvate cu succes.");
     } catch (error) {
       console.error("Error saving images:", error);
+      toast.error("A apărut o eroare la salvarea imaginilor.");
     }
   };
 
@@ -150,9 +188,11 @@ const ProviderSettingsPage: React.FC = () => {
     try {
       setSaving(true);
       await updateProviderService(user.uid, providerDataWithoutImages);
+      toast.success("Setările au fost actualizate cu succes.");
       setSaving(false);
     } catch (error) {
       setSaving(false);
+      toast.error("A apărut o eroare la actualizarea setărilor.");
     }
   };
 
@@ -163,7 +203,11 @@ const ProviderSettingsPage: React.FC = () => {
   ) : (
     <div className="flex flex-col w-full h-full bg-background p-[var(--padding-sm)] overflow-auto gap-6">
       <div className="flex justify-end items-center max-w-[1024px] mx-auto w-full sticky top-0 z-20 rounded-md gap-4">
-        <Button variant="default" onClick={updateProvider}>
+        <Button
+          variant="default"
+          onClick={updateProvider}
+          disabled={!canSave || saving}
+        >
           {saving && <Spinner />}
           Salvează Setările
         </Button>

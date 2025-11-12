@@ -4,16 +4,13 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import {
-  Facebook,
   Globe,
   Instagram,
-  Linkedin,
   Mail,
   MinusIcon,
   Phone,
   PlusIcon,
   Ticket,
-  Twitter,
 } from "lucide-react";
 import {
   Collapsible,
@@ -200,22 +197,23 @@ const Page = () => {
               </div>
             )}
 
-          {provider.faqs && provider.faqs.length > 0 && (
-            <div className="provider-faq flex flex-col gap-4">
-              <h3 className="text-2xl font-semibold mb-4">
-                Întrebări Frecvente
-              </h3>
-              {provider.faqs
-                .filter((faq) => faq.isActive)
-                .map((faq) => (
-                  <FAQItem
-                    key={faq.id}
-                    question={faq.question}
-                    answer={faq.answer}
-                  />
-                ))}
-            </div>
-          )}
+          {provider.faqs &&
+            provider.faqs.filter((faq) => faq.isActive).length > 0 && (
+              <div className="provider-faq flex flex-col gap-4">
+                <h3 className="text-2xl font-semibold mb-4">
+                  Întrebări Frecvente
+                </h3>
+                {provider.faqs
+                  .filter((faq) => faq.isActive)
+                  .map((faq) => (
+                    <FAQItem
+                      key={faq.id}
+                      question={faq.question}
+                      answer={faq.answer}
+                    />
+                  ))}
+              </div>
+            )}
         </div>
 
         {/* Right Column - Sticky Sidebar */}
@@ -240,7 +238,9 @@ const Page = () => {
                 )}
                 {provider.contactSettings?.website && (
                   <ContactCard
-                    provider={provider.contactSettings?.website}
+                    provider={"Website"}
+                    clickable={true}
+                    url={provider.contactSettings?.website}
                     icon={<Globe />}
                   />
                 )}
@@ -271,55 +271,56 @@ const Page = () => {
                   )}
               </div>
             </div>
-            {provider.packages && provider.packages.length > 0 && (
-              <div className="provider-packages w-full">
-                <Tabs
-                  defaultValue={
-                    provider.packages && provider.packages.length > 0
-                      ? provider.packages[0].name
-                      : ""
-                  }
-                >
-                  <TabsList>
+            {provider.packages &&
+              provider.packages.filter((pkg) => pkg.isActive).length > 0 && (
+                <div className="provider-packages w-full">
+                  <Tabs
+                    defaultValue={
+                      provider.packages && provider.packages.length > 0
+                        ? provider.packages[0].name
+                        : ""
+                    }
+                  >
+                    <TabsList>
+                      {provider.packages && provider.packages.length > 0 ? (
+                        provider.packages.map((pkg: any, index: number) => (
+                          <TabsTrigger
+                            key={index}
+                            value={pkg.name}
+                            className="flex-1"
+                          >
+                            {pkg.name}
+                          </TabsTrigger>
+                        ))
+                      ) : (
+                        <div>Niciun pachet disponibil.</div>
+                      )}
+                    </TabsList>
                     {provider.packages && provider.packages.length > 0 ? (
                       provider.packages.map((pkg: any, index: number) => (
-                        <TabsTrigger
-                          key={index}
-                          value={pkg.name}
-                          className="flex-1"
-                        >
-                          {pkg.name}
-                        </TabsTrigger>
+                        <TabsContent key={index} value={pkg.name}>
+                          <div className="package-card bg-white p-6 rounded-md shadow-sm max-h-[600px] overflow-y-auto">
+                            <h4 className="text-xl font-semibold mb-2">
+                              {pkg.name}
+                            </h4>
+                            <div className="mb-4">
+                              <MarkdownViewer content={pkg.description} />
+                            </div>
+                            {Number.isFinite(pkg.price) &&
+                              Number(pkg.price) > 0 && (
+                                <span className="text-2xl font-bold">
+                                  {pkg.price} {pkg.currency}
+                                </span>
+                              )}
+                          </div>
+                        </TabsContent>
                       ))
                     ) : (
                       <div>Niciun pachet disponibil.</div>
                     )}
-                  </TabsList>
-                  {provider.packages && provider.packages.length > 0 ? (
-                    provider.packages.map((pkg: any, index: number) => (
-                      <TabsContent key={index} value={pkg.name}>
-                        <div className="package-card bg-white p-6 rounded-md shadow-sm max-h-[600px] overflow-y-auto">
-                          <h4 className="text-xl font-semibold mb-2">
-                            {pkg.name}
-                          </h4>
-                          <div className="mb-4">
-                            <MarkdownViewer content={pkg.description} />
-                          </div>
-                          {Number.isFinite(pkg.price) &&
-                            Number(pkg.price) > 0 && (
-                              <span className="text-2xl font-bold">
-                                {pkg.price} {pkg.currency}
-                              </span>
-                            )}
-                        </div>
-                      </TabsContent>
-                    ))
-                  ) : (
-                    <div>Niciun pachet disponibil.</div>
-                  )}
-                </Tabs>
-              </div>
-            )}
+                  </Tabs>
+                </div>
+              )}
           </div>
         </div>
       </div>
@@ -342,12 +343,13 @@ const ContactCard = ({
 }) => {
   return (
     <div
-      className={`flex flex-row gap-4 bg-primary/5 border-1 border-primary p-2 rounded-md items-center${
+      className={`flex flex-row gap-4 bg-primary/5 border-1 border-primary p-2 rounded-md items-center ${
         clickable ? " cursor-pointer" : ""
       }`}
       onClick={clickable ? () => window.open(url, "_blank") : undefined}
     >
-      {icon} {provider}
+      <span className="min-w-5">{icon}</span>
+      <span className="truncate">{provider}</span>
     </div>
   );
 };

@@ -1,9 +1,9 @@
 "use client";
 
 import {
-  BadgeCheck,
   ChevronsUpDown,
   CreditCard,
+  LayoutDashboard,
   LogOut,
   Settings,
   Sparkles,
@@ -124,7 +124,7 @@ export function NavUser({ user }: { user: User | null }) {
                     manageSubscription(user?.uid!);
                   }}
                 >
-                  <Settings />
+                  <LayoutDashboard />
                   Gestionează abonament
                 </DropdownMenuItem>
               )}
@@ -134,10 +134,20 @@ export function NavUser({ user }: { user: User | null }) {
               <DropdownMenuItem
                 className="hover:!bg-sidebar-accent cursor-pointer"
                 onClick={() => {
-                  router.push("/dashboard/account");
+                  if (!user) return;
+                  router.push("/catalog-furnizori/" + user?.uid);
                 }}
               >
                 <UserIcon />
+                Vezi profil furnizor
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="hover:!bg-sidebar-accent cursor-pointer"
+                onClick={() => {
+                  router.push("/dashboard/account");
+                }}
+              >
+                <Settings />
                 Cont
               </DropdownMenuItem>
               <DropdownMenuItem

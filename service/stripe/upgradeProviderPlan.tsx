@@ -11,13 +11,13 @@ export const planUpgradeCheckout = async (
     "customers",
     userId,
     "checkout_sessions"
-  );
+  ); //price_1SSlB7IYmtfnTY0fIHTzfNbe
   // Add a new checkout session document
   const docRef = await addDoc(checkoutSessionsRef, {
     mode: "subscription",
     price: isAnnual
-      ? "price_1SScNeIxI3w7eVcKmu2UFIQh"
-      : "price_1SSJuCIxI3w7eVcKTp5OHp1L", // One-time price created in Stripe
+      ? "price_1SSlCuIYmtfnTY0f9nJqdeDk"
+      : "price_1SSlgLIYmtfnTY0fbLwNvWtt",
     success_url: window.location.origin,
     cancel_url: window.location.origin,
     customer_update: {

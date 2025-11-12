@@ -1,4 +1,10 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+
 export default function Home() {
+  const router = useRouter();
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -13,7 +19,10 @@ export default function Home() {
             perfect.
           </p>
           <div className="space-x-4">
-            <button className="bg-primary hover:bg-primary/80 cursor-pointer text-white px-8 py-3 rounded-lg font-semibold transition-colors">
+            <button
+              className="bg-primary hover:bg-primary/80 cursor-pointer text-white px-8 py-3 rounded-lg font-semibold transition-colors"
+              onClick={() => router.push("/catalog-furnizori")}
+            >
               Catalog Furnizori
             </button>
           </div>

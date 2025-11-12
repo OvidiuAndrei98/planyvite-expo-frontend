@@ -48,10 +48,11 @@ const MobileNavigation = () => {
                 Ești Furnizor ?
               </Link>
               <Link
-                href="/cum-functioneaza"
-                className="text-lg font-normal text-foreground"
+                href="https://planyvite.ro"
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                Cum functionează
+                Invitatii Digitale
               </Link>
             </div>
           </SheetContent>

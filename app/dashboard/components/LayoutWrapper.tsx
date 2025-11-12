@@ -19,10 +19,13 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import React from "react";
+import Link from "next/link";
 
 const routeTitleMapper: { [key: string]: string } = {
-  dashboard: "Contul meu",
-  invoices: "Plati si facturi",
+  dashboard: "Panou de control",
+  "setari-furnizor": "Setări Furnizor",
+  facturi: "Facturi",
+  "upgrade-plan": "Upgrade Plan",
 };
 
 const LayoutWithSuspense = ({ children }: { children: React.ReactNode }) => {
@@ -64,7 +67,7 @@ const LayoutWithSuspense = ({ children }: { children: React.ReactNode }) => {
               <BreadcrumbList>
                 {routeElements.map((route, index) => {
                   const isLast = index === routeElements.length - 1;
-                  const href = `/dashboard/${route}`;
+                  const href = `/${route}`;
                   return (
                     <React.Fragment key={route}>
                       <BreadcrumbItem
@@ -75,8 +78,10 @@ const LayoutWithSuspense = ({ children }: { children: React.ReactNode }) => {
                             {routeTitleMapper[route] || route}
                           </BreadcrumbPage>
                         ) : (
-                          <BreadcrumbLink href={href}>
-                            {routeTitleMapper[route] || route}
+                          <BreadcrumbLink href={href} asChild>
+                            <Link href={href}>
+                              {routeTitleMapper[route] || route}
+                            </Link>
                           </BreadcrumbLink>
                         )}
                       </BreadcrumbItem>
