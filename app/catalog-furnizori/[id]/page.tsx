@@ -138,8 +138,8 @@ const Page = () => {
             <Carousel>
               <CarouselContent>
                 {provider.generalSettings.images &&
-                provider.providerPlan === "pro" ? (
-                  provider.generalSettings.images.length > 0 ? (
+                provider.generalSettings.images.length > 0 ? (
+                  provider.providerPlan === "pro" ? (
                     provider.generalSettings.images.map((image, index) => (
                       <CarouselItem key={index}>
                         <Image

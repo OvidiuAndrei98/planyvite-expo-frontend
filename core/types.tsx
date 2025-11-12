@@ -40,3 +40,16 @@ export interface Provider {
     isActive: boolean;
   }[];
 }
+
+export interface PlanyviteInvoice {
+  id: string;
+  customerName: string;
+  issueDate: string;
+  invoiceLink: string;
+  amount: number;
+  invoiceNumber: string;
+  collected: string;
+  cancelled: string;
+  stornoed: string;
+  storno: string;
+}

@@ -5,7 +5,9 @@ import {
   ChevronsUpDown,
   CreditCard,
   LogOut,
+  Settings,
   Sparkles,
+  UserIcon,
 } from "lucide-react";
 
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
@@ -29,6 +31,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { User } from "@/core/types";
 import { useAuth } from "@/core/context/authContext";
+import { manageSubscription } from "@/service/stripe/manageSubscription";
 
 export function NavUser({ user }: { user: User | null }) {
   const { isMobile } = useSidebar();
@@ -102,9 +105,9 @@ export function NavUser({ user }: { user: User | null }) {
                 </div>
               </div>
             </DropdownMenuLabel>
-            {user?.providerPlan !== "pro" && <DropdownMenuSeparator />}
+            <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              {user?.providerPlan === "free" && (
+              {user?.providerPlan === "free" ? (
                 <DropdownMenuItem
                   className="hover:!bg-sidebar-accent cursor-pointer"
                   onClick={() => {
@@ -113,6 +116,16 @@ export function NavUser({ user }: { user: User | null }) {
                 >
                   <Sparkles />
                   Upgradeaza la Pro
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem
+                  className="hover:!bg-sidebar-accent cursor-pointer"
+                  onClick={() => {
+                    manageSubscription(user?.uid!);
+                  }}
+                >
+                  <Settings />
+                  Gestionează abonament
                 </DropdownMenuItem>
               )}
             </DropdownMenuGroup>
@@ -124,13 +137,13 @@ export function NavUser({ user }: { user: User | null }) {
                   router.push("/dashboard/account");
                 }}
               >
-                <BadgeCheck />
+                <UserIcon />
                 Cont
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="hover:!bg-sidebar-accent cursor-pointer"
                 onClick={() => {
-                  router.push(`/dashboard/invoices`);
+                  router.push(`/dashboard/facturi`);
                 }}
               >
                 <CreditCard />
