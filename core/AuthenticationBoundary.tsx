@@ -15,8 +15,6 @@ import { useRouter, usePathname } from "next/navigation";
 import { addUser } from "@/service/user/addUser";
 import { queryUserById } from "@/service/user/queryUserById";
 import { User } from "./types";
-// import { LoadingIndicator } from "@/lib/icons";
-// import { toast } from "sonner";
 import {
   AuthenticationContext,
   AuthenticationState,
@@ -50,14 +48,11 @@ export function AuthenticationBoundary({ children }: { children?: ReactNode }) {
         typeof window !== "undefined" ? window.location.pathname : pathname;
 
       if (user) {
-        // 1. Logică pentru Custom Claims și Abonament
         // Forțează reîmprospătarea token-ului pentru a obține cele mai recente Custom Claims
         const tokenResult = await user.getIdTokenResult(true);
         const role = tokenResult.claims.stripeRole;
         const isPremium = role === "pro";
         console.log("Stare abonament:", role);
-        // Poți seta aici starea de premium/non-premium pentru a o folosi în toată aplicația
-        // De exemplu: setIsPremiumUser(isPremium);
 
         if (!isPremium) {
           // Dacă nu este premium (Custom Claim lipsă), află motivul (UX)

@@ -60,3 +60,100 @@ export const syncProviderStatus = functions.firestore.onDocumentWritten(
     return null;
   }
 );
+
+export const setAdminRole = functions.https.onRequest(async (req, res) => {
+  // Măsură de securitate simplă: permit doar cererile GET
+  if (req.method !== "GET") {
+    res.status(405).send("Metoda nu este permisă.");
+    return;
+  }
+
+  try {
+    // 1. Setează Custom Claim-ul 'role: admin'
+    await admin.auth().setCustomUserClaims("E0dEOp5noiYGqOXVGM6pwYH9PwD2", {
+      admin: true,
+    });
+
+    // 2. Trimite un răspuns de succes
+    res.status(200).json({
+      success: true,
+      message: `Rolul 'admin' a fost setat cu succes pentru UID: ${"E0dEOp5noiYGqOXVGM6pwYH9PwD2"}.`,
+    });
+  } catch (error) {
+    console.error("Eroare la setarea rolului admin:", error);
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+});
+
+export const grantManualPro = functions.https.onCall(
+  { region: "europe-central2" },
+  async (request) => {
+    if (!request.auth) {
+      throw new functions.https.HttpsError(
+        "unauthenticated",
+        "Acces neautorizat. Funcția poate fi apelată doar de utilizatori autentificați."
+      );
+    }
+
+    const isAdmin = request.auth.token.admin;
+
+    const targetUid: string = request.data.targetUid; // ID-ul utilizatorului care primește acces
+    const providerId: string = request.data.providerId; // ID-ul furnizorului public asociat
+
+    if (!isAdmin) {
+      throw new functions.https.HttpsError(
+        "unauthenticated",
+        "Acces neautorizat. Funcția poate fi apelată doar de administratori."
+      );
+    }
+
+    // 2. VALIDARE: Asigură-te că datele necesare au fost trimise
+    if (!targetUid || !providerId) {
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        "Lipsesc ID-ul utilizatorului țintă (targetUid) sau ID-ul furnizorului (providerId)."
+      );
+    }
+
+    try {
+      // A. SETAREA CUSTOM CLAIM: Setează rolul 'pro' în Firebase Auth
+      await admin.auth().setCustomUserClaims(targetUid, { stripeRole: "pro" });
+
+      // Acest document declanșează funcția ta existentă de sincronizare
+      const subscriptionRef = db
+        .collection("customers")
+        .doc(targetUid)
+        .collection("subscriptions")
+        .doc("manual_pro_grant");
+
+      await subscriptionRef.set({
+        isManualGrant: true, // Marker crucial pentru ignorarea de către Stripe Webhooks
+        status: "active",
+        created: admin.firestore.FieldValue.serverTimestamp(),
+        // Setăm o dată foarte îndepărtată pentru a simula "fără expirare"
+        current_period_end: new Date("2099-01-01"),
+        items: [], // Nu este nevoie de detalii de preț Stripe
+        metadata: {
+          ProviderId: providerId, // Folosit de trigger-ul tău pentru actualizarea publică
+        },
+      });
+
+      return {
+        success: true,
+        message: `Acces PRO acordat manual și sincronizat pentru UID: ${targetUid}.`,
+      };
+    } catch (error) {
+      console.error(
+        `Eroare la acordarea manuală a PRO pentru ${targetUid}:`,
+        error
+      );
+      throw new functions.https.HttpsError(
+        "internal",
+        "A apărut o eroare la procesarea cererii de acordare a accesului."
+      );
+    }
+  }
+);
