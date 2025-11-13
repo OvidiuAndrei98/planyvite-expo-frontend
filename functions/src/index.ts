@@ -1,7 +1,7 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 
-import { setGlobalOptions } from "firebase-functions";
+import { logger, setGlobalOptions } from "firebase-functions";
 import { initializeApp } from "firebase-admin/app";
 
 initializeApp();
@@ -23,7 +23,7 @@ const db = admin.firestore();
 // this will be the maximum concurrent request count.
 setGlobalOptions({ maxInstances: 10 });
 
-export const syncProviderStatus = functions.firestore.onDocumentUpdated(
+export const syncProviderStatus = functions.firestore.onDocumentWritten(
   {
     document: "customers/{customerId}/subscriptions/{subscriptionId}",
     region: "europe-central2",
@@ -31,6 +31,11 @@ export const syncProviderStatus = functions.firestore.onDocumentUpdated(
   },
   async (event) => {
     const subAfter = event.data?.after.data();
+
+    if (!subAfter) {
+      return null;
+    }
+
     const subBefore = event.data?.before.data();
 
     if (subAfter?.status === subBefore?.status) return null;
@@ -49,6 +54,8 @@ export const syncProviderStatus = functions.firestore.onDocumentUpdated(
       providerPlan: isCurrentlyActive ? "pro" : "free",
       proStatusUpdated: admin.firestore.FieldValue.serverTimestamp(),
     });
+
+    logger.info("Provider updated", { value: providerId });
 
     return null;
   }

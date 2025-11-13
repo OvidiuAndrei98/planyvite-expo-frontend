@@ -290,9 +290,9 @@ const CookiesPolicy = () => {
 
         <section className="effective-date">
           <p className="text-sm text-gray-600 mt-8 pt-4 border-t">
-            <strong>Data intrării în vigoare:</strong> [Data]
+            <strong>Data intrării în vigoare:</strong> [12.11.2025]
             <br />
-            <strong>Ultima actualizare:</strong> [Data]
+            <strong>Ultima actualizare:</strong> [12.11.2025]
           </p>
         </section>
       </div>

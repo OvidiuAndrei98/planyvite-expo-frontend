@@ -308,7 +308,7 @@ const TermsAndConditionsPage = () => {
           </h2>
           <p>
             Vă rugăm să parcurgeți Politica de Confidențialitate disponibilă
-            <a href="#" className="text-blue-600 underline">
+            <a href="/confidentialitate" className="text-blue-600 underline">
               {" "}
               aici
             </a>
@@ -322,7 +322,7 @@ const TermsAndConditionsPage = () => {
           </h2>
           <p>
             Vă rugăm să parcurgeți Politica de Cookies disponibilă
-            <a href="#" className="text-blue-600 underline">
+            <a href="/cookies" className="text-blue-600 underline">
               {" "}
               aici
             </a>
@@ -362,6 +362,14 @@ const TermsAndConditionsPage = () => {
               România.
             </p>
           </div>
+        </section>
+
+        <section className="effective-date">
+          <p className="text-sm text-gray-600 mt-8 pt-4 border-t">
+            <strong>Data intrării în vigoare:</strong> [12.11.2025]
+            <br />
+            <strong>Ultima actualizare:</strong> [12.11.2025]
+          </p>
         </section>
       </div>
     </div>
