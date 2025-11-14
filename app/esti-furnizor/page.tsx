@@ -187,7 +187,7 @@ const BecomeProviderPage = () => {
 
         <div className="text-center">
           <Button
-            className="bg-purple-600 hover:bg-purple-700 text-white py-6 px-8 text-lg font-semibold"
+            className="bg-purple-600 hover:bg-purple-700 text-white py-6 px-8 text-lg font-semibold mt-4"
             onClick={() => router.push("/login")}
           >
             Devino Furnizor Acum
