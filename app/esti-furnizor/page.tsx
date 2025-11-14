@@ -15,11 +15,14 @@ import {
   BarChart3,
   CalendarIcon,
   CheckCircle,
+  ClockArrowDown,
   Crown,
   DollarSign,
   FileTextIcon,
   FolderArchiveIcon,
   Headphones,
+  LockIcon,
+  ServerIcon,
   Share2Icon,
   Star,
   Users,
@@ -30,7 +33,26 @@ import { useState } from "react";
 const BecomeProviderPage = () => {
   const [isAnnual, setIsAnnual] = useState(false);
   const router = useRouter();
-
+  const features = [
+    {
+      name: "Push to deploy.",
+      description:
+        "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.",
+      icon: ClockArrowDown,
+    },
+    {
+      name: "SSL certificates.",
+      description:
+        "Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo.",
+      icon: LockIcon,
+    },
+    {
+      name: "Database backups.",
+      description:
+        "Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis.",
+      icon: ServerIcon,
+    },
+  ];
   const proFeatures = [
     "Tot ce include planul gratuit",
     "Locatii multiple",
@@ -175,10 +197,10 @@ const BecomeProviderPage = () => {
     <div className="relative bg-gradient-to-br from-purple-50 to-pink-50 pt-12">
       <div className=" relative max-w-4xl mx-auto min-h-screen">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          <h1 className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl">
             Devino Furnizor pe Planyvite Expo
           </h1>
-          <p className="text-xl text-gray-600">
+          <p className="text-xl text-gray-600 mt-4">
             Promovează-ți serviciile acolo unde mirii te caută!
           </p>
         </div>
@@ -194,11 +216,12 @@ const BecomeProviderPage = () => {
           </Button>
         </div>
       </div>
+
       <div className="how-it-works-section relative bg-white py-16">
         <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-pink-50/80 to-transparent pointer-events-none" />
         <div className="max-w-4xl mx-auto mt-16 px-4 ">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl mb-4">
               Cum funcționează?
             </h2>
             <p className="text-lg text-gray-600">
@@ -245,11 +268,83 @@ const BecomeProviderPage = () => {
           </div>
         </div>
       </div>
+      <div className="overflow-hidden bg-white py-24 sm:py-32">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
+            <div className="lg:pt-4 lg:pr-8">
+              <div className="lg:max-w-lg">
+                <h2 className="text-base/7 font-semibold text-primary text-center md:text-left">
+                  Completează profilul de furnizor
+                </h2>
+                <p className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl text-center md:text-left">
+                  Arată-ți profesionalismul și atrage mai mulți clienți
+                </p>
+                <p className="mt-6 text-lg/8 text-gray-700 text-center md:text-left">
+                  Completează-ți profilul pentru a oferi mirilor toate
+                  informațiile necesare. Un profil bine pus la punct crește
+                  încrederea și rata de conversie.
+                </p>
+                <ul className="mt-6 space-y-3 text-gray-700">
+                  <li className="flex items-start gap-3">
+                    <strong className="text-indigo-600">1.</strong>
+                    <span>
+                      Descriere clară: explică serviciile, stilul și ce te
+                      diferențiază.
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <strong className="text-indigo-600">2.</strong>
+                    <span>
+                      Fotografii de calitate: încarcă 3–5 imagini
+                      reprezentative.
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <strong className="text-indigo-600">3.</strong>
+                    <span>
+                      Contact și locații: adaugă telefon, email și locațiile
+                      unde lucrezi.
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <strong className="text-indigo-600">4.</strong>
+                    <span>
+                      Pachete & prețuri: prezintă oferte clare și ce include
+                      fiecare pachet.
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <strong className="text-indigo-600">5.</strong>
+                    <span>
+                      Calendar: sincronizează-ți programul pentru rezervări
+                      rapide.
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <strong className="text-indigo-600">6.</strong>
+                    <span>
+                      Sfaturi rapide: folosește titluri concise, limbaj
+                      profesionist și actualizează periodic.
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <img
+              alt="Product screenshot"
+              src="/demo_img_dashboard.png"
+              width={2432}
+              height={1442}
+              className="w-3xl max-w-none rounded-xl shadow-xl ring-1 ring-gray-400/10 sm:w-228 md:-ml-4 lg:-ml-0"
+            />
+          </div>
+        </div>
+      </div>
       <div>
         <div className="benefits-section relative bg-gray-50 py-16 px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              <h2 className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl text-center mb-4">
                 Beneficiile de a fi furnizor pe Planyvite Expo
               </h2>
               <p className="text-lg text-gray-600">
@@ -328,7 +423,7 @@ const BecomeProviderPage = () => {
         <div className="pricing-section relative bg-white py-16 px-6">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              <h2 className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl text-center mb-4">
                 Alege planul potrivit pentru tine
               </h2>
               <p className="text-lg text-gray-600">
