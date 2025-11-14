@@ -194,9 +194,9 @@ const BecomeProviderPage = () => {
           </Button>
         </div>
       </div>
-      <div className="how-it-works-section relative bg-white py-6">
+      <div className="how-it-works-section relative bg-white py-16">
         <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-pink-50/80 to-transparent pointer-events-none" />
-        <div className="max-w-4xl mx-auto mt-16 px-4">
+        <div className="max-w-4xl mx-auto mt-16 px-4 ">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
               Cum funcționează?
