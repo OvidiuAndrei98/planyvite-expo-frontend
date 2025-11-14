@@ -22,6 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { useAuth } from "@/core/context/authContext";
 import { NavUser } from "./NavUser";
+import { getDetailedSubscriptionStatus } from "@/service/core/statusResolverService";
 
 export interface MenuItem {
   title: string;
@@ -40,6 +41,16 @@ export function AppSidebar({
   onClickNav: (info: { title: string; url: string }) => void;
 }) {
   const user = useAuth().userDetails;
+  const [userSubscriptionStatus, setUserSubscriptionStatus] =
+    React.useState<string>("");
+
+  React.useEffect(() => {
+    const checkSubscriptionStatus = async () => {
+      const status = await getDetailedSubscriptionStatus(user?.uid!);
+      setUserSubscriptionStatus(status);
+    };
+    checkSubscriptionStatus();
+  }, [user]);
 
   const data: MenuData = {
     navMain: [
@@ -101,7 +112,7 @@ export function AppSidebar({
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={user} />
+        <NavUser user={user} subscriptionStatus={userSubscriptionStatus} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

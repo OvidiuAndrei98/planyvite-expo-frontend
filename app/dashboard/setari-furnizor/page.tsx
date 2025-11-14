@@ -165,10 +165,17 @@ const ProviderSettingsPage: React.FC = () => {
     return true;
   };
 
-  const saveProviderImagesToFirestore = async (images: SortableImage[]) => {
-    if (!user || images.length === 0 || initialRender) return;
-
-    // Check if there are actual changes by comparing with existing images
+  const saveProviderImagesToFirestore = async (
+    images: SortableImage[],
+    onFinished: () => void
+  ) => {
+    if (!user || images.length === 0 || initialRender) {
+      if (onFinished) {
+        setTimeout(() => onFinished(), 0);
+      }
+      return;
+    }
+    // Logica de verificare a modificărilor...
     const existingImages = providerData?.generalSettings?.images || [];
     const hasChanges =
       images.length !== existingImages.length ||
@@ -176,8 +183,13 @@ const ProviderSettingsPage: React.FC = () => {
         (img, index) =>
           !existingImages[index] || img.id !== existingImages[index].id
       );
-
-    if (!hasChanges) return;
+    // No changes detected
+    if (!hasChanges) {
+      if (onFinished) {
+        setTimeout(() => onFinished(), 0);
+      }
+      return;
+    }
 
     try {
       await saveImagesToFirestore(images, user.uid);
@@ -185,6 +197,9 @@ const ProviderSettingsPage: React.FC = () => {
     } catch (error) {
       console.error("Error saving images:", error);
       toast.error("A apărut o eroare la salvarea imaginilor.");
+    } finally {
+      // 🚨 CRUCIAL: Resetează flag-ul în componenta Copil, indiferent de rezultat
+      onFinished?.();
     }
   };
 
@@ -369,8 +384,8 @@ const ProviderSettingsPage: React.FC = () => {
               <SortableImageUpload
                 maxFiles={user?.providerPlan === "pro" ? 5 : 1}
                 path={user?.uid || "defaultUserId"}
-                onSaveImages={(images) => {
-                  saveProviderImagesToFirestore(images);
+                onSaveImages={(images, onFinished) => {
+                  saveProviderImagesToFirestore(images, onFinished);
                   updateProviderProperty("generalSettings.images", images);
                 }}
                 defaultImages={providerData?.generalSettings?.images || []}

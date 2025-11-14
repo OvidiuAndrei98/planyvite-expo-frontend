@@ -33,7 +33,13 @@ import { User } from "@/core/types";
 import { useAuth } from "@/core/context/authContext";
 import { manageSubscription } from "@/service/stripe/manageSubscription";
 
-export function NavUser({ user }: { user: User | null }) {
+export function NavUser({
+  user,
+  subscriptionStatus,
+}: {
+  user: User | null;
+  subscriptionStatus: string;
+}) {
   const { isMobile } = useSidebar();
   const { logout } = useAuth();
   const router = useRouter();
@@ -107,7 +113,8 @@ export function NavUser({ user }: { user: User | null }) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              {user?.providerPlan === "free" ? (
+              {user?.providerPlan === "free" &&
+              subscriptionStatus === "no_subscription" ? (
                 <DropdownMenuItem
                   className="hover:!bg-sidebar-accent cursor-pointer"
                   onClick={() => {

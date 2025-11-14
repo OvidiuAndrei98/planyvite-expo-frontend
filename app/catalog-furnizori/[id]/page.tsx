@@ -217,8 +217,8 @@ const Page = () => {
         </div>
 
         {/* Right Column - Sticky Sidebar */}
-        <div className="lg:col-span-1">
-          <div className="sticky top-[90px] flex flex-col gap-6">
+        <div className="lg:col-span-1 order-1 lg:order-none">
+          <div className="lg:sticky lg:top-[90px] flex flex-col gap-6">
             <div className="provider-contact w-full bg-white p-6 rounded-md shadow-sm">
               <h3 className="text-2xl font-semibold mb-4">
                 Informații de Contact
@@ -289,7 +289,7 @@ const Page = () => {
                             value={pkg.name}
                             className="flex-1"
                           >
-                            {pkg.name}
+                            {"Pachet: " + (index + 1)}
                           </TabsTrigger>
                         ))
                       ) : (
@@ -361,26 +361,33 @@ const FAQItem = ({
   question: string;
   answer: string;
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
   return (
-    <Collapsible
-      open={isOpen}
-      onOpenChange={setIsOpen}
-      className="flex w-full flex-col gap-2 "
-    >
-      <div className="flex items-center justify-between gap-4 px-4 bg-white rounded-md py-2 shadow-sm">
-        <h4 className="text-sm font-semibold">{question}</h4>
-        <CollapsibleTrigger asChild>
-          <Button variant="ghost" size="icon" className="size-8">
-            {isOpen ? <MinusIcon className="rotate-180" /> : <PlusIcon />}
-          </Button>
-        </CollapsibleTrigger>
-      </div>
-      <CollapsibleContent className="flex flex-col gap-2">
-        <div className="relative rounded-md px-4 py-2 text-sm bg-white shadow-sm border border-gray-200 before:content-[''] before:left-0 before:right-0 before:h-[30px] before:-top-[17px] before:absolute before:bg-white">
+    <div className="bg-gradient-to-br from-primary/7 to-primary/5 rounded-lg shadow-md border border-primary/20 backdrop-blur-sm">
+      <details className="group">
+        <summary className="flex items-start justify-between gap-4 p-6 cursor-pointer hover:bg-primary/5 transition-colors rounded-lg group-open:rounded-b-none">
+          <div className="flex-1 min-w-0">
+            <h3 className="text-lg font-normal text-secondary-foreground font-sans break-words whitespace-normal">
+              {question}
+            </h3>
+          </div>
+          <svg
+            className="w-5 h-5 text-primary transition-transform group-open:rotate-180 flex-shrink-0 mt-1"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </summary>
+        <div className="px-6 pb-6 w-full break-words whitespace-normal">
           {answer}
         </div>
-      </CollapsibleContent>
-    </Collapsible>
+      </details>
+    </div>
   );
 };

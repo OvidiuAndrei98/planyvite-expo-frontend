@@ -46,9 +46,7 @@ interface ImageUploadProps {
   maxSize?: number;
   accept?: string;
   className?: string;
-  onImagesChange?: (images: ImageFile[]) => void;
-  onUploadComplete?: (images: ImageFile[]) => void;
-  onSaveImages?: (images: SortableImage[]) => void;
+  onSaveImages?: (images: SortableImage[], onFinished: () => void) => void;
 }
 export default function SortableImageUpload({
   defaultImages,
@@ -57,8 +55,6 @@ export default function SortableImageUpload({
   maxSize = 10 * 1024 * 1024, // 10MB as per UI reference
   accept = "image/*",
   className,
-  onImagesChange,
-  onUploadComplete,
   onSaveImages,
 }: ImageUploadProps) {
   const [images, setImages] = useState<ImageFile[]>([]);
@@ -68,6 +64,7 @@ export default function SortableImageUpload({
   const [allImages, setAllImages] = useState<SortableImage[]>(
     defaultImages ?? []
   );
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (defaultImages && defaultImages.length > 0) {
@@ -75,10 +72,31 @@ export default function SortableImageUpload({
     }
   }, [defaultImages]);
 
-  // Save images whenever allImages changes
+  const handleSave = useCallback(() => {
+    if (isSaving) return;
+
+    setIsSaving(true);
+
+    onSaveImages?.(allImages, () => {
+      setIsSaving(false);
+    });
+  }, [allImages, isSaving, onSaveImages]);
+
   useEffect(() => {
-    onSaveImages?.(allImages);
-  }, [allImages]);
+    if (allImages.length === 0 && images.length === 0) return;
+
+    const allHavePermanentURL = allImages.every(
+      (img) => !img.src.startsWith("blob:")
+    );
+
+    const allCompletedStatus = images.every(
+      (img) => img.status === "completed" || img.status === "error"
+    );
+
+    if (allHavePermanentURL && allCompletedStatus) {
+      handleSave();
+    }
+  }, [allImages, images, onSaveImages]);
 
   // Helper function to create SortableImage from ImageFile
   const createSortableImage = useCallback(
@@ -95,6 +113,7 @@ export default function SortableImageUpload({
     setAllImages((prev) => prev.filter((item) => item && item.id));
     setImages((prev) => prev.filter((item) => item && item.id));
   }, []);
+
   const validateFile = (file: File): string | null => {
     if (!file.type.startsWith("image/")) {
       return "File must be an image";
@@ -109,10 +128,11 @@ export default function SortableImageUpload({
     }
     return null;
   };
-  const addImages = useCallback(
+  const handleAddAndUpload = useCallback(
     (files: FileList | File[]) => {
-      const newImages: ImageFile[] = [];
+      const newImagesToUpload: ImageFile[] = [];
       const newErrors: string[] = [];
+
       Array.from(files).forEach((file) => {
         const error = validateFile(file);
         if (error) {
@@ -126,14 +146,15 @@ export default function SortableImageUpload({
           progress: 0,
           status: "uploading",
         };
-        newImages.push(imageFile);
+        newImagesToUpload.push(imageFile);
       });
+
       if (newErrors.length > 0) {
         setErrors((prev) => [...prev, ...newErrors]);
       }
-      if (newImages.length > 0) {
-        // Check if adding new images would exceed the limit
-        if (allImages.length + newImages.length > maxFiles) {
+
+      if (newImagesToUpload.length > 0) {
+        if (allImages.length + newImagesToUpload.length > maxFiles) {
           setErrors((prev) => [
             ...prev,
             maxFiles === 1
@@ -145,21 +166,27 @@ export default function SortableImageUpload({
 
         setErrors([]);
 
-        const updatedImages = [...images, ...newImages];
-        setImages(updatedImages);
-        onImagesChange?.(updatedImages);
-        // Add new images to allImages for sorting
-        const newSortableImages = newImages.map(createSortableImage);
+        setImages((prev) => [...prev, ...newImagesToUpload]);
+
+        const newSortableImages = newImagesToUpload.map(createSortableImage);
         setAllImages((prev) => [...prev, ...newSortableImages]);
-        // Simulate upload progress
-        newImages.forEach((imageFile) => {
-          simulateUpload(imageFile);
+
+        newImagesToUpload.forEach((imageFile) => {
+          handleUpload(imageFile);
         });
       }
     },
-    [images, maxSize, maxFiles, onImagesChange, createSortableImage]
+    [
+      allImages.length,
+      maxFiles,
+      setErrors,
+      setImages,
+      setAllImages,
+      createSortableImage,
+    ]
   );
-  const simulateUpload = async (imageFile: ImageFile) => {
+
+  const handleUpload = (imageFile: ImageFile) => {
     try {
       const storage = getStorage();
       const storageRef = ref(
@@ -171,7 +198,6 @@ export default function SortableImageUpload({
       uploadTask.on(
         "state_changed",
         (snapshot) => {
-          // Track upload progress
           const progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           setImages((prev) =>
@@ -181,7 +207,6 @@ export default function SortableImageUpload({
           );
         },
         (error) => {
-          // Handle upload error
           console.error("Upload error:", error);
           setImages((prev) =>
             prev.map((img) =>
@@ -192,9 +217,10 @@ export default function SortableImageUpload({
           );
         },
         async () => {
-          // Upload completed successfully
           try {
             const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+
+            // Actualizează starea 'images' cu URL-ul final și statusul
             setImages((prev) =>
               prev.map((img) =>
                 img.id === imageFile.id
@@ -202,50 +228,34 @@ export default function SortableImageUpload({
                       ...img,
                       progress: 100,
                       status: "completed",
-                      preview: downloadURL, // Update preview to Firebase URL
+                      preview: downloadURL,
                     }
                   : img
               )
             );
 
-            // Update the sortable image with Firebase URL
+            // Actualizează starea 'allImages' (lista sortabilă) cu URL-ul final
             setAllImages((prev) =>
               prev.map((img) =>
                 img.id === imageFile.id ? { ...img, src: downloadURL } : img
               )
             );
 
-            // Check if all uploads are complete
-            const updatedImages = images.map((img) =>
-              img.id === imageFile.id
-                ? { ...img, progress: 100, status: "completed" as const }
-                : img
-            );
-            if (updatedImages.every((img) => img.status === "completed")) {
-              onUploadComplete?.(updatedImages);
+            // Deconectează URL-ul Blob local (Curățare memorie)
+            if (imageFile.preview.startsWith("blob:")) {
+              URL.revokeObjectURL(imageFile.preview);
             }
           } catch (error) {
             console.error("Error getting download URL:", error);
-            setImages((prev) =>
-              prev.map((img) =>
-                img.id === imageFile.id
-                  ? {
-                      ...img,
-                      status: "error",
-                      error: "Failed to get image URL",
-                    }
-                  : img
-              )
-            );
           }
         }
       );
     } catch (error) {
-      console.error("Upload initialization error:", error);
+      console.error("Error uploading image:", error);
       setImages((prev) =>
         prev.map((img) =>
           img.id === imageFile.id
-            ? { ...img, status: "error", error: "Failed to start upload" }
+            ? { ...img, status: "error", error: (error as Error).message }
             : img
         )
       );
@@ -313,10 +323,10 @@ export default function SortableImageUpload({
       setIsDragging(false);
       const files = e.dataTransfer.files;
       if (files.length > 0) {
-        addImages(files);
+        handleAddAndUpload(files);
       }
     },
-    [addImages]
+    [handleAddAndUpload]
   );
   const openFileDialog = useCallback(() => {
     const input = document.createElement("input");
@@ -326,11 +336,11 @@ export default function SortableImageUpload({
     input.onchange = (e) => {
       const target = e.target as HTMLInputElement;
       if (target.files) {
-        addImages(target.files);
+        handleAddAndUpload(target.files);
       }
     };
     input.click();
-  }, [accept, addImages]);
+  }, [accept, handleAddAndUpload]);
   const formatBytes = (bytes: number): string => {
     if (bytes === 0) return "0 Bytes";
     const k = 1024;
