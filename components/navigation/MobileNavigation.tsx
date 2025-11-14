@@ -12,13 +12,12 @@ import {
 import Image from "next/image";
 import PlanyviteLogo from "@/public/planyvite_logo.svg";
 import Link from "next/link";
-import { MenuIcon } from "lucide-react";
+import { LogInIcon, MenuIcon } from "lucide-react";
 
 const MobileNavigation = () => {
   return (
-    <div className="mobile-page-navigation flex items-center justify-between px-[var(--padding-md)] py-4 border-b border-gray-200 bg-white sticky top-0 left-0 w-full z-50">
+    <div className="mobile-page-navigation grid grid-cols-[auto_100px_auto] items-center px-[var(--padding-md)] py-4 border-b border-gray-200 bg-white sticky top-0 left-0 w-full z-50">
       <div className="flex items-center gap-2">
-        <Image src={PlanyviteLogo} alt="logo" width={100} height={100} />
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="ghost">
@@ -58,13 +57,16 @@ const MobileNavigation = () => {
           </SheetContent>
         </Sheet>
       </div>
+      <Image src={PlanyviteLogo} alt="logo" width={100} height={100} />
       <Button
+        className="w-16 justify-self-end"
+        variant="default"
         type="submit"
         onClick={() => {
           window.location.href = "/login";
         }}
       >
-        Intra in cont
+        <LogInIcon />
       </Button>
     </div>
   );

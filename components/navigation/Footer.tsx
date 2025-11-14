@@ -55,7 +55,13 @@ export function Footer() {
               <Link href="/esti-furnizor">Ești Furnizor?</Link>
             </li>
             <li className="text-[#797687] hover:text-[var(--primary-color)] transition-colors cursor-pointer">
-              <Link href="https://planyvite.ro">Invitații Digitale</Link>
+              <Link
+                href="https://planyvite.ro"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Invitații Digitale
+              </Link>
             </li>
           </ul>
           <ul className="text-center space-y-1">
