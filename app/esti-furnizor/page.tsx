@@ -1,6 +1,7 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
+import { BentoGrid } from "@/components/ui/bento-grid";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,12 +10,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import GlowingCards, { GlowingCard } from "@/components/ui/glowing-cards";
 import {
   BarChart3,
+  CalendarIcon,
   CheckCircle,
   Crown,
   DollarSign,
+  FileTextIcon,
+  FolderArchiveIcon,
   Headphones,
+  Share2Icon,
   Star,
   Users,
 } from "lucide-react";
@@ -35,6 +41,136 @@ const BecomeProviderPage = () => {
     "Connfigurare sectiune FAQ",
   ];
 
+  const cards = [
+    {
+      icon: Users,
+      title: "Clienți calificați",
+      description:
+        "Conectează-te cu miri care sunt cu adevărat interesați de serviciile tale.",
+      className: "col-span-1 lg:col-span-1",
+      background: (
+        <GlowingCards
+          enableGlow={true}
+          glowRadius={30}
+          glowOpacity={0.6}
+          backgroundColor="#faf3fb"
+        >
+          <GlowingCard
+            glowColor="#8b5cf6"
+            hoverEffect={true}
+            className="bg-transparent"
+          >
+            <div className="bg-transparent">
+              <div className="text-center p-4">
+                <Users className="w-6 h-6 text-purple-600 mx-auto mb-2" />
+                <div className="text-2xl font-bold text-purple-800">500+</div>
+                <div className="text-sm text-purple-600">Miri activi lunar</div>
+              </div>
+            </div>
+          </GlowingCard>
+        </GlowingCards>
+      ),
+    },
+    {
+      icon: Star,
+      title: "Profil dedicat",
+      description: `Afișează descrierea completă, fotografii, oferte și date de
+                  contact pentru a atrage atenția mirilor.`,
+      className: "col-span-1 lg:col-span-2",
+      background: (
+        <GlowingCards
+          enableGlow={true}
+          glowRadius={30}
+          glowOpacity={0.6}
+          backgroundColor="#fff7ed"
+        >
+          <GlowingCard
+            glowColor="#f59e0b"
+            hoverEffect={true}
+            className="bg-transparent"
+          >
+            <div className="flex h-full w-full items-center justify-center bg-transparent rounded-lg">
+              <div className="text-center">
+                <FileTextIcon className="w-6 h-6 text-yellow-600 mx-auto mb-2" />
+                <h3 className="text-lg font-semibold text-yellow-800 mb-1">
+                  Profil dedicat brandului tău
+                </h3>
+                <p className="text-sm text-yellow-700 mb-3">
+                  Prezintă-ți serviciile cu un profil complet personalizat
+                </p>
+              </div>
+            </div>
+          </GlowingCard>
+        </GlowingCards>
+      ),
+    },
+    {
+      icon: Crown,
+      title: "Poziționare premium",
+      description:
+        "Poți apărea în topul rezultatelor pentru mai multă vizibilitate în fața clienților potriviți.",
+      className: "col-span-1 lg:col-span-2",
+      background: (
+        <GlowingCards
+          enableGlow={true}
+          glowRadius={30}
+          glowOpacity={0.6}
+          backgroundColor="#f0f9ff"
+        >
+          <GlowingCard
+            glowColor="#3b82f6"
+            hoverEffect={true}
+            className="bg-transparent"
+          >
+            <div className="bg-transparent flex h-full w-full items-center justify-center rounded-lg">
+              <div className="text-center">
+                <Crown className="w-6 h-6  text-blue-500 mx-auto mb-2" />
+                <h3 className="text-lg font-semibold text-blue-800 mb-2">
+                  Poziționare premium
+                </h3>
+                <p className="text-sm text-blue-700">
+                  Poți apărea în topul rezultatelor pentru mai multă
+                  vizibilitate în fața clienților potriviți.
+                </p>
+              </div>
+            </div>
+          </GlowingCard>
+        </GlowingCards>
+      ),
+    },
+    {
+      icon: DollarSign,
+      title: "Creștere venituri",
+      description:
+        "Mărește-ți numărul de contracte prin expunere constantă în platformă.",
+      className: "col-span-1 lg:col-span-1",
+      background: (
+        <GlowingCards
+          enableGlow={true}
+          glowRadius={30}
+          glowOpacity={0.6}
+          backgroundColor="#ecfdf5"
+        >
+          <GlowingCard
+            glowColor="#10b981"
+            hoverEffect={true}
+            className="bg-transparent"
+          >
+            <div className="bg-transparent">
+              <div className="text-center">
+                <DollarSign className="w-12 h-12 text-green-600 mx-auto mb-2" />
+                <div className="text-xl font-bold text-green-800">+35%</div>
+                <div className="text-sm text-green-600">
+                  Creștere medie venituri
+                </div>
+              </div>
+            </div>
+          </GlowingCard>
+        </GlowingCards>
+      ),
+    },
+  ];
+
   return (
     <div className="relative bg-gradient-to-br from-purple-50 to-pink-50 pt-12">
       <div className=" relative max-w-4xl mx-auto min-h-screen">
@@ -47,46 +183,7 @@ const BecomeProviderPage = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 mb-12">
-          <div className="bg-white rounded-lg p-6 shadow-lg z-2">
-            <h3 className="text-xl font-semibold text-gray-900 mb-3">
-              Acces la sute de miri potențiali
-            </h3>
-            <p className="text-gray-600">
-              Fii acolo unde clienții caută servicii.
-            </p>
-          </div>
-
-          <div className="bg-white rounded-lg p-6 shadow-lg">
-            <h3 className="text-xl font-semibold text-gray-900 mb-3">
-              Profil dedicat brandului tău
-            </h3>
-            <p className="text-gray-600">
-              Afișează descrierea completă, fotografii, oferte și date de
-              contact pentru a atrage atenția mirilor.
-            </p>
-          </div>
-
-          <div className="bg-white rounded-lg p-6 shadow-lg">
-            <h3 className="text-xl font-semibold text-gray-900 mb-3">
-              Poziționare premium
-            </h3>
-            <p className="text-gray-600">
-              Poți apărea în topul rezultatelor pentru mai multă vizibilitate în
-              fața clienților potriviți.
-            </p>
-          </div>
-
-          <div className="bg-white rounded-lg p-6 shadow-lg z-2">
-            <h3 className="text-xl font-semibold text-gray-900 mb-3">
-              Potrivit pentru orice furnizor
-            </h3>
-            <p className="text-gray-600">
-              Fotografi, videografi, formații, DJ, florari, organizatori,
-              rochii, locații și alți profesioniști sunt bineveniți.
-            </p>
-          </div>
-        </div>
+        <BentoGrid cards={cards} columns={3} className="mt-10" />
 
         <div className="text-center">
           <Button
@@ -99,7 +196,7 @@ const BecomeProviderPage = () => {
       </div>
       <div className="how-it-works-section relative bg-white py-6">
         <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-pink-50/80 to-transparent pointer-events-none" />
-        <div className="max-w-4xl mx-auto mt-16">
+        <div className="max-w-4xl mx-auto mt-16 px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
               Cum funcționează?
@@ -149,7 +246,7 @@ const BecomeProviderPage = () => {
         </div>
       </div>
       <div>
-        <div className="benefits-section relative bg-gray-50 py-16">
+        <div className="benefits-section relative bg-gray-50 py-16 px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-gray-900 mb-4">
@@ -195,18 +292,6 @@ const BecomeProviderPage = () => {
                 </h3>
                 <p className="text-gray-600">
                   Construiește-ți reputația prin recenziile clienților mulțumiți
-                </p>
-              </div>
-
-              <div className="bg-white rounded-lg p-6 shadow-lg border-l-4 border-primary">
-                <div className="text-primary mb-3">
-                  <BarChart3 className="w-8 h-8" />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  Gestionare simplă
-                </h3>
-                <p className="text-gray-600">
-                  Administrează-ți profilul și rezervările dintr-un singur loc
                 </p>
               </div>
 

@@ -46,16 +46,16 @@ export function Footer() {
               Link-uri
             </li>
             <li className="text-[#797687] hover:text-[var(--primary-color)] transition-colors cursor-pointer">
-              Acasa
+              <Link href="/">Acasă</Link>
             </li>
             <li className="text-[#797687] hover:text-[var(--primary-color)] transition-colors cursor-pointer">
-              Modele
+              <Link href="/catalog-furnizori">Catalog Furnizori</Link>
             </li>
             <li className="text-[#797687] hover:text-[var(--primary-color)] transition-colors cursor-pointer">
-              Preturi
+              <Link href="/esti-furnizor">Ești Furnizor?</Link>
             </li>
             <li className="text-[#797687] hover:text-[var(--primary-color)] transition-colors cursor-pointer">
-              Cum functioneaza
+              <Link href="https://planyvite.ro">Invitații Digitale</Link>
             </li>
           </ul>
           <ul className="text-center space-y-1">
