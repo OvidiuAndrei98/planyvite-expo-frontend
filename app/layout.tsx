@@ -22,6 +22,18 @@ export const metadata: Metadata = {
   publisher: "planyvite.ro",
   description:
     "Planyvite Expo - Acces la furnizori și resurse pentru planificarea evenimentelor tale",
+  openGraph: {
+    title: "Titlul Site-ului",
+    description: "O scurtă descriere a paginii tale.",
+    images: [
+      {
+        url: "/planyvite_logo.svg",
+        width: 1200,
+        height: 630,
+        alt: "Imagine de previzualizare a site-ului",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
