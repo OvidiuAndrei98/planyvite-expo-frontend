@@ -23,14 +23,15 @@ export const metadata: Metadata = {
   description:
     "Planyvite Expo - Acces la furnizori și resurse pentru planificarea evenimentelor tale",
   openGraph: {
-    title: "Titlul Site-ului",
-    description: "O scurtă descriere a paginii tale.",
+    title: "Planyvite Expo",
+    description:
+      "Acces la furnizori și resurse pentru planificarea evenimentelor tale",
     images: [
       {
         url: "/planyvite_logo.svg",
         width: 1200,
         height: 630,
-        alt: "Imagine de previzualizare a site-ului",
+        alt: "Planyvite Expo Logo",
       },
     ],
   },
