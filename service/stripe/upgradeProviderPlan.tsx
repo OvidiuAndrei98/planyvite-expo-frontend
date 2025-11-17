@@ -16,8 +16,8 @@ export const planUpgradeCheckout = async (
   const docRef = await addDoc(checkoutSessionsRef, {
     mode: "subscription",
     price: isAnnual
-      ? "price_1SSlCuIYmtfnTY0f9nJqdeDk"
-      : "price_1SSlB7IYmtfnTY0fIHTzfNbe",
+      ? "price_1SUOU9IYmtfnTY0f5UO6nKIq"
+      : "price_1SUOTNIYmtfnTY0feiECpAWc",
     success_url: window.location.origin,
     cancel_url: window.location.origin,
     customer_update: {

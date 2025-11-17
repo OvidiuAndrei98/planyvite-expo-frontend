@@ -522,7 +522,7 @@ const BecomeProviderPage = () => {
                     </div>
                   </div>
                   <div className="text-2xl font-bold">
-                    RON {isAnnual ? "200" : "20"}/{isAnnual ? "an" : "luna"}
+                    RON {isAnnual ? "390" : "39"}/{isAnnual ? "an" : "luna"}
                     <span className="text-sm font-normal text-muted-foreground ml-2">
                       facturat {isAnnual ? "anual" : "lunar"}
                     </span>
