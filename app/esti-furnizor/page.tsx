@@ -66,7 +66,7 @@ const BecomeProviderPage = () => {
   const cards = [
     {
       icon: Users,
-      title: "Clienți calificați",
+      title: "Clienți potriviți",
       description:
         "Conectează-te cu miri care sunt cu adevărat interesați de serviciile tale.",
       className: "col-span-1 lg:col-span-1",
@@ -370,7 +370,7 @@ const BecomeProviderPage = () => {
                   <Users className="w-8 h-8" />
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  Clienți calificați
+                  Clienți potriviți
                 </h3>
                 <p className="text-gray-600">
                   Conectează-te doar cu miri care sunt cu adevărat interesați de
