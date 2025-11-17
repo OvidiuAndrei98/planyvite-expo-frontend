@@ -85,7 +85,7 @@ const BecomeProviderPage = () => {
             <div className="bg-transparent">
               <div className="text-center p-4">
                 <Users className="w-6 h-6 text-purple-600 mx-auto mb-2" />
-                <div className="text-2xl font-bold text-purple-800">500+</div>
+                {/* <div className="text-2xl font-bold text-purple-800">500+</div> */}
                 <div className="text-sm text-purple-600">Miri activi lunar</div>
               </div>
             </div>
