@@ -5,7 +5,7 @@ import { getDoc, updateDoc } from "firebase/firestore";
 
 export const addUser = async (user: User): Promise<void> => {
   try {
-    await setDoc(doc(db, "users/" + user.uid), user);
+    await setDoc(doc(db, "users/", user.uid), user);
     // also create an empty provider document for this user
     const providerRef = doc(db, "providers/" + user.uid);
     const providerSnap = await getDoc(providerRef);
